@@ -1,0 +1,6 @@
+{
+  "name": "Yeasin Poultry Management System",
+  "description": "Comprehensive poultry farm management system for tracking batch expenses, bird sales, mortality, FCR, and sector-wise profitability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

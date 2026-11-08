@@ -1,0 +1,3418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeasin Poultry Management System</title>
+    <meta name="description" content="Comprehensive poultry farm management system for tracking batch expenses, bird sales, mortality, FCR, and sector-wise profitability." />
+    <meta property="og:title" content="Yeasin Poultry Management System" />
+    <meta property="og:description" content="Comprehensive poultry farm management system for tracking batch expenses, bird sales, mortality, FCR, and sector-wise profitability." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <!-- Chart.js 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind CSS CDN with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              display: ['Outfit', 'sans-serif'],
+            },
+            colors: {
+              poultry: {
+                50: '#f0fdf4',
+                100: '#dcfce7',
+                200: '#bbf7d0',
+                300: '#86efac',
+                400: '#4ade80',
+                500: '#22c55e',
+                600: '#16a34a',
+                700: '#15803d',
+                800: '#166534',
+                900: '#14532d',
+                dark: '#0f391f',
+              },
+              amberGold: {
+                400: '#fbbf24',
+                500: '#f59e0b',
+                600: '#d97706',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+      }
+      h1, h2, h3, h4, .font-display {
+        font-family: 'Outfit', sans-serif;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+        .print-only {
+          display: block !important;
+        }
+        body {
+          background: white !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased">
+
+    <!-- Top Notification Banner / Toast Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- MAIN APP HEADER -->
+    <header class="bg-gradient-to-r from-slate-900 via-poultry-900 to-slate-900 text-white shadow-lg sticky top-0 z-40 border-b border-emerald-800/40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+          
+          <!-- Logo & Brand -->
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amberGold-400 to-emerald-500 p-0.5 shadow-md flex items-center justify-center flex-shrink-0">
+              <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-amberGold-400">
+                <!-- Inline SVG Rooster / Poultry Badge -->
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" opacity="0.2"/>
+                  <!-- Stylized Hen/Rooster Silhouette -->
+                  <path d="M18.8 6.2c-.3-.8-1.1-1.3-1.9-1.1l-.8.2c-.2-.6-.7-1.1-1.3-1.3-.8-.3-1.7 0-2.2.7l-.4.6c-.6-.2-1.3-.1-1.8.3-.7.5-.9 1.4-.6 2.2-1.5.8-2.6 2.3-2.8 4.1-.1.7.1 1.4.4 2l-3.2 2.1c-.5.3-.7.9-.5 1.5.2.5.7.9 1.3.9h1.2c.4 1.8 1.9 3.2 3.8 3.5.4 0 .8 0 1.2-.1l1.5 2.5c.2.4.6.6 1 .6.2 0 .4 0 .6-.1.5-.3.8-.9.6-1.5l-.8-2c2.1-.9 3.6-2.9 3.7-5.3.1-1.4-.4-2.8-1.3-3.8.3-.5.5-1 .5-1.6 0-.6-.2-1.1-.5-1.6l.8-.2c.7-.3 1.1-1 .9-1.8l-.1-.4zM16 8.5c-.4 0-.7-.3-.7-.7s.3-.7.7-.7.7.3.7.7-.3.7-.7.7z"/>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xl sm:text-2xl font-extrabold tracking-tight font-display text-white">YEASIN <span class="text-amberGold-400">POULTRY</span></span>
+                <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">PRO FARM v2.4</span>
+              </div>
+              <p class="text-xs text-slate-300 tracking-wide hidden xs:block">Poultry Farm Expenses, Sales & Batch Profitability System</p>
+            </div>
+          </div>
+
+          <!-- Top Actions & Controls -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Currency Selector -->
+            <div class="relative inline-block text-left">
+              <select id="currencySelector" class="bg-slate-800/90 hover:bg-slate-700 text-amberGold-400 font-semibold text-xs rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm">
+                <option value="৳">৳ BDT (Taka)</option>
+                <option value="$">$ USD (Dollar)</option>
+                <option value="₹">₹ INR (Rupee)</option>
+                <option value="€">€ EUR (Euro)</option>
+                <option value="£">£ GBP (Pound)</option>
+              </select>
+            </div>
+
+            <!-- Active Batch Indicator Pill (Clickable to switch) -->
+            <div id="headerActiveBatchPill" class="hidden md:flex items-center gap-2 bg-emerald-950/80 border border-emerald-600/40 rounded-lg px-3 py-1.5 text-xs text-emerald-200">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="font-medium text-slate-300">Active:</span>
+              <span id="headerBatchName" class="font-bold text-emerald-300 truncate max-w-[120px]">Batch #14</span>
+              <span id="headerBatchAge" class="bg-emerald-800/60 px-1.5 py-0.5 rounded text-[10px] font-bold text-amberGold-300">Day 26</span>
+            </div>
+
+            <!-- Start New Batch Button -->
+            <button onclick="openModal('newBatchModal')" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-poultry-600 hover:from-emerald-500 hover:to-poultry-500 text-white font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-lg shadow-md transition-all active:scale-95 border border-emerald-500/40 cursor-pointer">
+              <i class="fa-solid fa-plus-circle text-amberGold-300"></i>
+              <span class="hidden sm:inline">New Batch</span>
+              <span class="sm:hidden">New</span>
+            </button>
+
+            <!-- Quick Data Management Dropdown -->
+            <div class="relative">
+              <button onclick="toggleDataMenu()" id="dataMenuBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-lg border border-slate-700 text-xs transition cursor-pointer" title="Data & Settings">
+                <i class="fa-solid fa-sliders text-sm"></i>
+              </button>
+              <div id="dataDropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-xl shadow-2xl bg-white border border-slate-200 text-slate-800 py-1.5 z-50 text-xs font-medium">
+                <div class="px-3 py-2 border-b border-slate-100 bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                  Farm Data Operations
+                </div>
+                <button onclick="exportSummaryCSV(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2.5 text-slate-700">
+                  <i class="fa-solid fa-file-csv text-emerald-600 text-sm"></i> Export Batches (CSV)
+                </button>
+                <button onclick="exportTransactionsCSV(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2.5 text-slate-700">
+                  <i class="fa-solid fa-file-excel text-emerald-600 text-sm"></i> Export All Transactions (CSV)
+                </button>
+                <button onclick="exportJSONBackup(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2.5 text-slate-700">
+                  <i class="fa-solid fa-download text-blue-600 text-sm"></i> Download Backup (JSON)
+                </button>
+                <label class="w-full text-left px-3.5 py-2 hover:bg-slate-100 flex items-center gap-2.5 text-slate-700 cursor-pointer">
+                  <i class="fa-solid fa-upload text-blue-600 text-sm"></i> Restore from JSON
+                  <input type="file" id="importJsonFileInput" accept=".json" class="hidden" onchange="importJSONBackup(event)" />
+                </label>
+                <div class="border-t border-slate-100 my-1"></div>
+                <button onclick="resetToDemoData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-700 flex items-center gap-2.5">
+                  <i class="fa-solid fa-rotate text-amber-600 text-sm"></i> Reload Sample Demo Data
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Navigation Tabs Bar -->
+        <nav class="flex space-x-1 sm:space-x-2 border-t border-slate-800/80 pt-2 pb-2.5 overflow-x-auto no-scrollbar" aria-label="Tabs">
+          <button onclick="switchTab('runningBatchTab')" id="tabBtn-runningBatchTab" class="tab-button inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap bg-emerald-600 text-white shadow-sm">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Running Batch Dashboard</span>
+          </button>
+          <button onclick="switchTab('entryTab')" id="tabBtn-entryTab" class="tab-button inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Expense & Income Entry</span>
+          </button>
+          <button onclick="switchTab('allBatchesTab')" id="tabBtn-allBatchesTab" class="tab-button inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
+            <i class="fa-solid fa-chart-column"></i>
+            <span>All Batches & Comparison</span>
+          </button>
+          <button onclick="switchTab('toolsTab')" id="tabBtn-toolsTab" class="tab-button inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
+            <i class="fa-solid fa-calculator"></i>
+            <span>Poultry Tools & FCR</span>
+          </button>
+        </nav>
+
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <!-- ============================================================ -->
+      <!-- TAB 1: RUNNING BATCH DASHBOARD (ACTIVE BATCH ONLY) -->
+      <!-- ============================================================ -->
+      <section id="runningBatchTab" class="tab-content space-y-6">
+
+        <!-- Top Header & Active Batch Switcher Bar -->
+        <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> CURRENTLY ACTIVE BATCH
+                </span>
+                <span id="activeBatchBreedBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
+                  Hubbard Classic Broiler
+                </span>
+              </div>
+              <h1 id="activeBatchTitle" class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display tracking-tight">
+                Batch #14 - Hubbard Classic Broiler
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <span><i class="fa-regular fa-calendar-check text-emerald-600 mr-1.5"></i>Started: <strong id="activeBatchStartDate" class="text-slate-700">Oct 14, 2026</strong></span>
+                <span><i class="fa-regular fa-calendar-xmark text-slate-400 mr-1.5"></i>Est. Harvest: <strong id="activeBatchEndDate" class="text-slate-700">Nov 18, 2026</strong></span>
+                <span><i class="fa-solid fa-kiwi-bird text-amber-500 mr-1.5"></i>Initial Flock: <strong id="activeBatchInitialCount" class="text-slate-700">3,000 Birds</strong></span>
+              </p>
+            </div>
+
+            <!-- Quick Action Buttons for Active Batch -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="quickOpenExpenseForActive()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-receipt text-emerald-600"></i> + Log Expense
+              </button>
+              <button onclick="quickOpenIncomeForActive()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-sack-dollar text-amber-600"></i> + Log Sale
+              </button>
+              <button onclick="quickOpenMortalityForActive()" class="bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-heart-crack text-rose-600"></i> + Mortality
+              </button>
+              <button onclick="openCompleteBatchModal()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-sm">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i> Close Batch
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Batch Progress Bar & Growth Timeline -->
+          <div class="mt-6 pt-5 border-t border-slate-100">
+            <div class="flex items-center justify-between text-xs sm:text-sm font-semibold mb-2">
+              <span class="flex items-center gap-1.5 text-slate-700">
+                <i class="fa-solid fa-hourglass-half text-emerald-600"></i>
+                <span>Batch Timeline: <strong id="activeBatchDayLabel" class="text-emerald-700 font-bold">Day 26 of 35 Days</strong></span>
+              </span>
+              <span id="activeBatchPercentLabel" class="text-emerald-700 font-bold">74% Completed</span>
+            </div>
+            
+            <div class="w-full bg-slate-100 rounded-full h-3.5 overflow-hidden p-0.5 border border-slate-200">
+              <div id="activeBatchProgressBar" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-amberGold-500 h-full rounded-full transition-all duration-700" style="width: 74%"></div>
+            </div>
+
+            <!-- Milestone Markers -->
+            <div class="grid grid-cols-4 gap-2 mt-3 text-[10px] sm:text-xs text-slate-500">
+              <div class="flex flex-col">
+                <span class="font-bold text-slate-700">Days 1 - 7</span>
+                <span>Brooding / Starter</span>
+              </div>
+              <div class="flex flex-col text-center">
+                <span class="font-bold text-slate-700">Days 8 - 18</span>
+                <span>Vaccination & Grower</span>
+              </div>
+              <div class="flex flex-col text-center">
+                <span class="font-bold text-emerald-700">Days 19 - 30</span>
+                <span>Finisher Stage (Current)</span>
+              </div>
+              <div class="flex flex-col text-right">
+                <span class="font-bold text-slate-700">Days 31 - 35</span>
+                <span>Harvest & Weight Sales</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Core Metric Cards (Active Batch Only) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          
+          <!-- Card 1: Total Sales / Income -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Sales Income</p>
+                <h3 id="dashActiveIncome" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-display">৳ 125,000</h3>
+                <p id="dashActiveIncomeSub" class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+                  <i class="fa-solid fa-scale-unbalanced text-emerald-600"></i>
+                  <span>650 kg sold (320 birds)</span>
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0 border border-emerald-100">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Avg Selling Rate:</span>
+              <strong id="dashActiveAvgRate" class="text-emerald-700 font-semibold">৳ 192.30 / kg</strong>
+            </div>
+          </div>
+
+          <!-- Card 2: Total Expenses -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Expenses</p>
+                <h3 id="dashActiveExpense" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-display">৳ 470,900</h3>
+                <p id="dashActiveExpenseSub" class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+                  <i class="fa-solid fa-receipt text-rose-500"></i>
+                  <span>8 Sectors logged</span>
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl flex-shrink-0 border border-rose-100">
+                <i class="fa-solid fa-arrow-trend-down"></i>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Cost Per Alive Bird:</span>
+              <strong id="dashActiveCostPerBird" class="text-rose-700 font-semibold">৳ 159.52 / bird</strong>
+            </div>
+          </div>
+
+          <!-- Card 3: Net Profit / Loss -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Current Balance / Status</p>
+                <h3 id="dashActiveNetProfit" class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-1 font-display">-৳ 345,900</h3>
+                <p id="dashActiveNetSub" class="text-xs text-amber-600 mt-1.5 flex items-center gap-1 font-medium">
+                  <i class="fa-solid fa-hourglass text-amber-500"></i>
+                  <span>In Rearing (Harvest Pending)</span>
+                </p>
+              </div>
+              <div id="dashActiveNetIconWrapper" class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl flex-shrink-0 border border-amber-100">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Est. Final Profit:</span>
+              <strong id="dashActiveProjectedProfit" class="text-emerald-700 font-semibold">~ +৳ 267,000</strong>
+            </div>
+          </div>
+
+          <!-- Card 4: Mortality & Flock Status -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mortality & Health</p>
+                <h3 id="dashActiveMortalityCount" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 font-display">48 Dead</h3>
+                <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+                  <span id="dashActiveMortalityRateBadge" class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">
+                    1.60% (Healthy)
+                  </span>
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl flex-shrink-0 border border-teal-100">
+                <i class="fa-solid fa-heart-pulse"></i>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Surviving Birds:</span>
+              <strong id="dashActiveAliveBirds" class="text-slate-800 font-bold">2,632 Alive (98.4%)</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Secondary Batch Performance Highlights -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-900 text-white rounded-2xl p-4 sm:p-5 shadow-md">
+          <div class="border-r border-slate-800 pr-3">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Total Feed Consumed</p>
+            <h4 id="dashActiveFeedTotal" class="text-lg sm:text-xl font-bold font-display text-amberGold-400 mt-0.5">140 Bags (7,000 kg)</h4>
+            <p class="text-[10px] text-slate-400">Starter + Grower + Finisher</p>
+          </div>
+          <div class="border-r border-slate-800 pr-3">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Current FCR Est.</p>
+            <h4 id="dashActiveFCR" class="text-lg sm:text-xl font-bold font-display text-emerald-400 mt-0.5">1.46 (Excellent)</h4>
+            <p class="text-[10px] text-slate-400">Standard: 1.45 - 1.65</p>
+          </div>
+          <div class="border-r border-slate-800 pr-3">
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Avg Live Weight</p>
+            <h4 id="dashActiveAvgWeight" class="text-lg sm:text-xl font-bold font-display text-teal-400 mt-0.5">2.15 kg / bird</h4>
+            <p class="text-[10px] text-slate-400">Sample on Day 26</p>
+          </div>
+          <div>
+            <p class="text-[11px] text-slate-400 uppercase font-semibold">Cost of Prod. / KG</p>
+            <h4 id="dashActiveCostPerKg" class="text-lg sm:text-xl font-bold font-display text-blue-400 mt-0.5">৳ 144.80 / kg</h4>
+            <p class="text-[10px] text-slate-400">Break-even target</p>
+          </div>
+        </div>
+
+        <!-- 2-Column: Sector Expense Breakdown & Recent Batch Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Column 1: Sector-Wise Expense Breakdown (Chart + Table) -->
+          <div class="lg:col-span-7 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-lg font-bold text-slate-900 font-display">Active Batch Sector Expenses</h3>
+                <p class="text-xs text-slate-500">Breakdown of costs by category for this batch</p>
+              </div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                8 Categories
+              </span>
+            </div>
+
+            <!-- Chart & List Container -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+              <!-- Doughnut Chart Container -->
+              <div class="sm:col-span-5 flex flex-col items-center justify-center">
+                <div class="relative w-44 h-44 sm:w-48 sm:h-48">
+                  <canvas id="activeSectorChart"></canvas>
+                </div>
+                <p class="text-[11px] text-slate-400 text-center mt-2">Feed is typically 60-70% of total flock cost</p>
+              </div>
+
+              <!-- Category breakdown list -->
+              <div class="sm:col-span-7 space-y-2.5 max-h-72 overflow-y-auto pr-1" id="activeCategoryBreakdownList">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Recent Activity for Active Batch -->
+          <div class="lg:col-span-5 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-slate-900 font-display">Recent Batch Logs</h3>
+                <button onclick="switchTab('entryTab')" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 cursor-pointer">
+                  View All <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </button>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">Latest expenses, sales, and mortality records for Batch #14</p>
+              
+              <div id="activeBatchRecentLogsList" class="space-y-2.5">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs text-slate-500">Need to record more data?</span>
+              <button onclick="switchTab('entryTab')" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 rounded-lg transition cursor-pointer">
+                Go to Entry Form
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TAB 2: EXPENSE & INCOME ENTRY -->
+      <!-- ============================================================ -->
+      <section id="entryTab" class="tab-content space-y-6 hidden">
+        
+        <!-- Entry Section Top Navigation Pills -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-2xl shadow-sm border border-slate-200/80">
+          <div class="flex flex-wrap gap-2">
+            <button onclick="switchEntrySubTab('expenseSubTab')" id="subTabBtn-expenseSubTab" class="sub-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 text-white shadow-sm transition">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <span>Log Expense</span>
+            </button>
+            <button onclick="switchEntrySubTab('incomeSubTab')" id="subTabBtn-incomeSubTab" class="sub-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+              <i class="fa-solid fa-sack-dollar text-emerald-600"></i>
+              <span>Log Sales / Income</span>
+            </button>
+            <button onclick="switchEntrySubTab('mortalitySubTab')" id="subTabBtn-mortalitySubTab" class="sub-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+              <i class="fa-solid fa-skull text-slate-600"></i>
+              <span>Log Mortality</span>
+            </button>
+            <button onclick="switchEntrySubTab('historySubTab')" id="subTabBtn-historySubTab" class="sub-tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+              <i class="fa-solid fa-list-check text-blue-600"></i>
+              <span>Transaction History</span>
+            </button>
+          </div>
+
+          <!-- Active Batch Selection for Log Context -->
+          <div class="flex items-center gap-2 text-xs">
+            <span class="text-slate-500 font-medium">Logging for:</span>
+            <select id="entryBatchSelectGlobal" onchange="syncEntryBatchDropdowns(this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <!-- Dynamically populated with active and all batches -->
+            </select>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 1: LOG EXPENSE FORM -->
+        <div id="expenseSubTab" class="sub-tab-content bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-slate-200/80">
+          <div class="max-w-3xl">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-slate-900 font-display">Record Farm Expense</h2>
+                <p class="text-xs text-slate-500">Track costs by sector (Feed, Chicks, Vaccine, Medicine, Electricity, etc.)</p>
+              </div>
+            </div>
+
+            <form id="expenseForm" onsubmit="handleExpenseSubmit(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Batch Selection -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target Batch *</label>
+                  <select id="expenseBatchId" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition">
+                    <!-- Populated by JS -->
+                  </select>
+                </div>
+
+                <!-- Expense Date -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date *</label>
+                  <input type="date" id="expenseDate" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Category Dropdown -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Expense Sector / Category *</label>
+                  <select id="expenseCategory" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition">
+                    <option value="Feed">Feed (Broiler Starter, Grower, Finisher)</option>
+                    <option value="Chicks">Chicks (Day Old Chicks / DOC)</option>
+                    <option value="Vaccine">Vaccine & Biologicals (ND, IBD, Lasota)</option>
+                    <option value="Medicine">Medicine, Antibiotics & Vitamins</option>
+                    <option value="Labor">Labor & Attendant Wages</option>
+                    <option value="Electricity">Electricity, Gas & Brooding Fuel</option>
+                    <option value="Bedding">Bedding & Rice Husk / Litter</option>
+                    <option value="Transport">Transport & Cartage</option>
+                    <option value="Equipment">Equipment & Repairs</option>
+                    <option value="Others">Others / Miscellaneous</option>
+                  </select>
+                </div>
+
+                <!-- Total Amount -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Amount (<span class="currencyLabel">৳</span>) *</label>
+                  <div class="relative">
+                    <span class="currencyLabel absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">৳</span>
+                    <input type="number" step="any" min="0" id="expenseAmount" required placeholder="0.00" class="w-full pl-8 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-bold text-rose-700 focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition" />
+                  </div>
+                </div>
+
+                <!-- Item Description / Details -->
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Item Title / Details *</label>
+                  <input type="text" id="expenseTitle" required placeholder="e.g. Broiler Finisher Feed - 25 bags, ND Lasota Vaccine, Rice Husk 20 sacks" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Quantity & Unit -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Quantity & Unit</label>
+                  <input type="text" id="expenseQty" placeholder="e.g. 25 Bags (50kg each), 5 vials, 100 kg" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Payment Method -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Method</label>
+                  <select id="expensePaymentMethod" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition">
+                    <option value="Cash">Cash in Hand</option>
+                    <option value="bKash / Mobile Banking">bKash / Nagad / Rocket</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Supplier Credit (Due)">Supplier Credit (Due)</option>
+                  </select>
+                </div>
+
+                <!-- Notes / Receipt -->
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Notes / Supplier / Voucher No.</label>
+                  <input type="text" id="expenseNotes" placeholder="e.g. Invoice #9842 from Al-Madina Feeds, Cashier: Yeasin" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-rose-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+              </div>
+
+              <!-- Submit Button -->
+              <div class="pt-4 flex items-center justify-end gap-3">
+                <button type="reset" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-100 transition cursor-pointer">
+                  Clear
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold shadow-md transition flex items-center gap-2 cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-check"></i> Save Expense Record
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 2: LOG INCOME / SALES FORM -->
+        <div id="incomeSubTab" class="sub-tab-content bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-slate-200/80 hidden">
+          <div class="max-w-3xl">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-slate-900 font-display">Record Bird / Byproduct Sales</h2>
+                <p class="text-xs text-slate-500">Log live broiler sales, egg trays, spent hens, poultry manure, or feed sacks</p>
+              </div>
+            </div>
+
+            <form id="incomeForm" onsubmit="handleIncomeSubmit(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Batch Selection -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target Batch *</label>
+                  <select id="incomeBatchId" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition">
+                    <!-- Populated by JS -->
+                  </select>
+                </div>
+
+                <!-- Sale Date -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sale Date *</label>
+                  <input type="date" id="incomeDate" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Sale Product Type -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Product / Sale Type *</label>
+                  <select id="incomeType" onchange="handleIncomeTypeChange(this.value)" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition">
+                    <option value="Live Broiler">Live Broiler Chicken</option>
+                    <option value="Culled / Spent Birds">Culled / Spent Hens</option>
+                    <option value="Table Eggs">Table Eggs (Trays)</option>
+                    <option value="Poultry Litter / Manure">Poultry Litter / Manure (Fertilizer)</option>
+                    <option value="Empty Feed Bags">Empty Feed Bags (Jute/Plastic)</option>
+                    <option value="Other">Other Byproducts</option>
+                  </select>
+                </div>
+
+                <!-- Buyer / Trader Name -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Buyer / Wholesaler Name</label>
+                  <input type="text" id="incomeBuyer" placeholder="e.g. Haji Traders / Karwan Bazar Wholesaler" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Bird Count / Quantity -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Bird Count / Units Sold</label>
+                  <input type="number" min="0" id="incomeBirdsCount" oninput="calculateIncomeAutoValues()" placeholder="e.g. 500 birds" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Total Weight in KG -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Weight in KG *</label>
+                  <input type="number" step="any" min="0" id="incomeTotalWeight" oninput="calculateIncomeAutoValues()" required placeholder="e.g. 1075.50 kg" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <!-- Average Bird Weight Display (Computed) -->
+                <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+                  <div class="text-xs text-slate-600">
+                    <span class="font-bold text-emerald-800">Avg. Weight per Bird:</span>
+                    <p class="text-[11px] text-slate-500">Auto-calculated (Total KG ÷ Birds)</p>
+                  </div>
+                  <span id="incomeComputedAvgWeight" class="text-base font-extrabold text-emerald-700 font-display">0.00 kg</span>
+                </div>
+
+                <!-- Price Per KG or Unit -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Price per KG (<span class="currencyLabel">৳</span>) *</label>
+                  <div class="relative">
+                    <span class="currencyLabel absolute left-3.5 top-2.5 text-slate-400 font-bold text-sm">৳</span>
+                    <input type="number" step="any" min="0" id="incomePricePerKg" oninput="calculateIncomeAutoValues()" required placeholder="e.g. 195.00" class="w-full pl-8 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                  </div>
+                </div>
+
+                <!-- Total Sale Amount (Auto or manual) -->
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Sale Amount (<span class="currencyLabel">৳</span>) *</label>
+                  <div class="relative">
+                    <span class="currencyLabel absolute left-3.5 top-2.5 text-slate-400 font-bold text-base">৳</span>
+                    <input type="number" step="any" min="0" id="incomeTotalAmount" required placeholder="0.00" class="w-full pl-8 bg-emerald-50/50 border border-emerald-300 rounded-xl px-3.5 py-2.5 text-base font-extrabold text-emerald-800 focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                  </div>
+                </div>
+
+                <!-- Payment Status & Amount Received -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Payment Status</label>
+                  <select id="incomePaymentStatus" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition">
+                    <option value="Paid in Full">Paid in Full (Cash / Bank)</option>
+                    <option value="Partial Payment">Partial Payment Received</option>
+                    <option value="Credit / Due">Credit / Due (Pending)</option>
+                  </select>
+                </div>
+
+                <!-- Notes / Contact -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Vehicle / Contact / Notes</label>
+                  <input type="text" id="incomeNotes" placeholder="e.g. Truck No. Dhaka Metro 11-4432, 01700-000000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+              </div>
+
+              <!-- Submit Button -->
+              <div class="pt-4 flex items-center justify-end gap-3">
+                <button type="reset" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-100 transition cursor-pointer">
+                  Clear
+                </button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-md transition flex items-center gap-2 cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-check"></i> Save Sales Record
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 3: LOG MORTALITY FORM -->
+        <div id="mortalitySubTab" class="sub-tab-content bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-slate-200/80 hidden">
+          <div class="max-w-2xl">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-heart-crack text-rose-500"></i>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-slate-900 font-display">Daily Mortality & Dead Birds Log</h2>
+                <p class="text-xs text-slate-500">Record daily flock loss to track mortality rates and health trends</p>
+              </div>
+            </div>
+
+            <form id="mortalityForm" onsubmit="handleMortalitySubmit(event)" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Batch *</label>
+                  <select id="mortalityBatchId" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-slate-500 focus:bg-white focus:outline-none transition">
+                    <!-- Populated by JS -->
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date *</label>
+                  <input type="date" id="mortalityDate" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-slate-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dead Birds Count *</label>
+                  <input type="number" min="1" id="mortalityCount" required placeholder="e.g. 5" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-bold text-rose-600 focus:ring-2 focus:ring-slate-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Suspected Cause</label>
+                  <select id="mortalityCause" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-slate-500 focus:bg-white focus:outline-none transition">
+                    <option value="Normal / Natural Culling">Normal / Natural Culling</option>
+                    <option value="Heat Stress / Suffocation">Heat Stress / Suffocation</option>
+                    <option value="Ascites (Water Belly)">Ascites (Water Belly)</option>
+                    <option value="Respiratory (CRD/Cough)">Respiratory Issue (CRD)</option>
+                    <option value="Gumboro (IBD) Suspicion">Gumboro (IBD) Suspicion</option>
+                    <option value="Sudden Death Syndrome (Flip-Over)">Sudden Death Syndrome (Flip-Over)</option>
+                    <option value="Weak Day-Old Chick">Weak Day-Old Chick</option>
+                    <option value="Predator / Accidental">Predator / Accidental</option>
+                    <option value="Other / Unknown">Other / Unknown</option>
+                  </select>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Post-Mortem / Vet Observation Notes</label>
+                  <input type="text" id="mortalityNotes" placeholder="e.g. Found near cooling pads; vet recommended vitamin C and electrolyte in water" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-slate-500 focus:bg-white focus:outline-none transition" />
+                </div>
+
+              </div>
+
+              <div class="pt-4 flex items-center justify-end gap-3">
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold shadow-md transition flex items-center gap-2 cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-check"></i> Log Dead Birds
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 4: FULL TRANSACTION HISTORY TABLE -->
+        <div id="historySubTab" class="sub-tab-content bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <h2 class="text-xl font-bold text-slate-900 font-display">Farm Ledger & Transaction History</h2>
+              <p class="text-xs text-slate-500">Filter, inspect, and manage all logged expenditures, sales, and bird deaths</p>
+            </div>
+
+            <!-- Export to CSV -->
+            <button onclick="exportTransactionsCSV()" class="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-3.5 py-2 rounded-xl transition cursor-pointer">
+              <i class="fa-solid fa-download"></i> Export Filtered CSV
+            </button>
+          </div>
+
+          <!-- Filters Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-4">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Search Keywords</label>
+              <input type="text" id="historySearch" oninput="renderTransactionHistoryTable()" placeholder="Search description, buyer, etc..." class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filter by Type</label>
+              <select id="historyFilterType" onchange="renderTransactionHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <option value="All">All Types (Income, Expense, Dead)</option>
+                <option value="Expense">Expenses Only</option>
+                <option value="Income">Income / Sales Only</option>
+                <option value="Mortality">Mortality Logs Only</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filter by Batch</label>
+              <select id="historyFilterBatch" onchange="renderTransactionHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <option value="All">All Batches</option>
+                <!-- Populated by JS -->
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filter by Sector</label>
+              <select id="historyFilterCategory" onchange="renderTransactionHistoryTable()" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <option value="All">All Sectors</option>
+                <option value="Feed">Feed</option>
+                <option value="Chicks">Chicks</option>
+                <option value="Vaccine">Vaccine</option>
+                <option value="Medicine">Medicine</option>
+                <option value="Labor">Labor</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Live Broiler">Live Broiler Sales</option>
+                <option value="Mortality">Mortality</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table Summary Counter -->
+          <div class="flex items-center justify-between text-xs text-slate-500 px-1 mb-2">
+            <span id="historyRecordCount">Showing 0 records</span>
+            <div class="flex items-center gap-3">
+              <span>Income: <strong id="historyTotalIncome" class="text-emerald-700 font-bold">৳0</strong></span>
+              <span>Expenses: <strong id="historyTotalExpense" class="text-rose-700 font-bold">৳0</strong></span>
+            </div>
+          </div>
+
+          <!-- Table Responsive -->
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-100 text-slate-600 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-3">Date</th>
+                  <th class="py-3 px-3">Batch</th>
+                  <th class="py-3 px-3">Type</th>
+                  <th class="py-3 px-3">Sector / Category</th>
+                  <th class="py-3 px-3">Details / Buyer</th>
+                  <th class="py-3 px-3">Qty / Weight</th>
+                  <th class="py-3 px-3 text-right">Amount (<span class="currencyLabel">৳</span>)</th>
+                  <th class="py-3 px-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transactionHistoryTableBody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TAB 3: ALL BATCHES & COMPARISON (YEARLY REPORTS) -->
+      <!-- ============================================================ -->
+      <section id="allBatchesTab" class="tab-content space-y-6 hidden">
+        
+        <!-- Header & Yearly Filter Controls -->
+        <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 font-display">Batch Performance & Yearly Analytics</h2>
+              <p class="text-xs sm:text-sm text-slate-500">Compare profitability, FCR, and sector expenditures across completed and running batches</p>
+            </div>
+
+            <!-- Year & Status Dropdown Filters -->
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="analyticsYearFilter" onchange="renderAllBatchesAnalytics()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500">
+                <option value="All">All Years Combined</option>
+                <option value="2026" selected>Year 2026</option>
+                <option value="2025">Year 2025</option>
+              </select>
+
+              <select id="analyticsStatusFilter" onchange="renderAllBatchesAnalytics()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500">
+                <option value="All">All Batches (Active & Closed)</option>
+                <option value="Completed">Completed Only</option>
+                <option value="Active">Active Only</option>
+              </select>
+
+              <button onclick="exportSummaryCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-file-csv"></i> Export Summary
+              </button>
+            </div>
+          </div>
+
+          <!-- Annual Aggregate KPI Strip -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-6 pt-5 border-t border-slate-100">
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Total Batches</p>
+              <h4 id="yearlyTotalBatches" class="text-lg font-bold font-display text-slate-900 mt-0.5">3 Batches</h4>
+              <p class="text-[10px] text-emerald-600 font-medium" id="yearlyBatchesSplit">2 Closed • 1 Active</p>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Total Revenue</p>
+              <h4 id="yearlyTotalRevenue" class="text-lg font-bold font-display text-emerald-700 mt-0.5">৳ 1,253,900</h4>
+              <p class="text-[10px] text-slate-500">Sales & byproducts</p>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Total Expenses</p>
+              <h4 id="yearlyTotalExpense" class="text-lg font-bold font-display text-rose-700 mt-0.5">৳ 1,358,900</h4>
+              <p class="text-[10px] text-slate-500">All input costs</p>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Closed Batches Profit</p>
+              <h4 id="yearlyNetProfit" class="text-lg font-bold font-display text-emerald-600 mt-0.5">+৳ 240,900</h4>
+              <p class="text-[10px] text-slate-500 font-medium">From completed flocks</p>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Birds Farmed</p>
+              <h4 id="yearlyTotalBirds" class="text-lg font-bold font-display text-slate-900 mt-0.5">7,500 Birds</h4>
+              <p class="text-[10px] text-slate-500" id="yearlyMortalityAvg">Avg Mortality: 2.53%</p>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <p class="text-[10px] uppercase font-bold text-slate-400">Avg Commercial FCR</p>
+              <h4 id="yearlyAvgFCR" class="text-lg font-bold font-display text-emerald-700 mt-0.5">1.43</h4>
+              <p class="text-[10px] text-emerald-600 font-medium">Efficient feed rating</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Batch Comparison Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Chart 1: Profit & Income vs Expense by Batch -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900 font-display">Batch Profitability & Income vs Expense</h3>
+                <p class="text-xs text-slate-500">Comparing financial performance across batches</p>
+              </div>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                <span class="currencyLabel">৳</span> Financials
+              </span>
+            </div>
+            <div class="h-64 sm:h-72 w-full">
+              <canvas id="multiBatchProfitChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Sector-Wise Expense Comparison Across Batches -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-base font-bold text-slate-900 font-display">Sector-Wise Expense Comparison</h3>
+                <p class="text-xs text-slate-500">Chicks vs Feed vs Medicine vs Overheads across batches</p>
+              </div>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                Cost Centers
+              </span>
+            </div>
+            <div class="h-64 sm:h-72 w-full">
+              <canvas id="multiBatchSectorChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- All Batches Master Table -->
+        <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 font-display">All Farm Batches Directory</h3>
+              <p class="text-xs text-slate-500">Complete summary table with production metrics, FCR, and ROI</p>
+            </div>
+            <button onclick="openModal('newBatchModal')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-plus"></i> New Batch
+            </button>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-100 text-slate-600 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-3">Batch Name</th>
+                  <th class="py-3 px-3">Breed / Type</th>
+                  <th class="py-3 px-3">Dates & Days</th>
+                  <th class="py-3 px-3">Initial Flock</th>
+                  <th class="py-3 px-3">Mortality %</th>
+                  <th class="py-3 px-3">Feed (kg) & FCR</th>
+                  <th class="py-3 px-3">Total Cost</th>
+                  <th class="py-3 px-3">Total Income</th>
+                  <th class="py-3 px-3">Net Profit / Loss</th>
+                  <th class="py-3 px-3">Status</th>
+                  <th class="py-3 px-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="allBatchesTableBody" class="divide-y divide-slate-100">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- TAB 4: POULTRY TOOLS (FCR & MORTALITY CALCULATOR) -->
+      <!-- ============================================================ -->
+      <section id="toolsTab" class="tab-content space-y-6 hidden">
+        
+        <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-900 font-display">Poultry Farm Efficiency Calculators</h2>
+              <p class="text-xs text-slate-500">Commercial calculators for Feed Conversion Ratio (FCR), Mortality, Cost of Production per KG, and EPEF</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- TOOL 1: FCR CALCULATOR -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">1</span>
+                  <h3 class="text-lg font-bold text-slate-900 font-display">FCR (Feed Conversion Ratio)</h3>
+                </div>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Standard Formula
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">
+                <strong>Formula:</strong> Total Feed Consumed (kg) ÷ Total Live Weight (kg). Measures how many kilograms of feed it takes to produce 1 kg of chicken meat.
+              </p>
+
+              <div class="space-y-3.5">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Feed Consumed (kg) *</label>
+                  <div class="flex gap-2">
+                    <input type="number" step="any" id="fcrToolFeedKg" oninput="calculateFCRTool()" value="5800" placeholder="e.g. 5800" class="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                    <button type="button" onclick="fcrConvertBagsToKg()" class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 font-medium">Bags to KG</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Live Bird Weight Harvested (kg) *</label>
+                  <input type="number" step="any" id="fcrToolWeightKg" oninput="calculateFCRTool()" value="4120" placeholder="e.g. 4120" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Number of Birds Sold</label>
+                  <input type="number" id="fcrToolBirdsSold" oninput="calculateFCRTool()" value="1936" placeholder="e.g. 1936" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- FCR Result Card -->
+            <div class="mt-6 pt-5 border-t border-slate-100 bg-emerald-50/60 rounded-xl p-4 border border-emerald-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-emerald-900">Calculated FCR:</span>
+                <span id="fcrToolResult" class="text-2xl font-extrabold text-emerald-700 font-display">1.41</span>
+              </div>
+              <div id="fcrToolRatingBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <i class="fa-solid fa-star text-amber-500"></i> Excellent Broiler Performance (&lt; 1.45)
+              </div>
+              <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-emerald-200/60 text-xs text-slate-600">
+                <div>Avg Body Weight: <strong id="fcrToolAvgWeight" class="text-slate-800">2.13 kg</strong></div>
+                <div>Feed Per Bird: <strong id="fcrToolFeedPerBird" class="text-slate-800">3.00 kg</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 2: MORTALITY & LIVABILITY CALCULATOR -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-800 flex items-center justify-center font-bold text-sm">2</span>
+                  <h3 class="text-lg font-bold text-slate-900 font-display">Mortality & Livability Index</h3>
+                </div>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                  Flock Health
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">
+                Calculates flock survival percentage and flags whether death rates meet commercial broiler industry standards (Target: Under 3.0% to 4.0%).
+              </p>
+
+              <div class="space-y-3.5">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Initial Chicks Placed *</label>
+                  <input type="number" id="mortToolInitialChicks" oninput="calculateMortalityTool()" value="2500" placeholder="e.g. 2500" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-rose-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Total Dead Birds Count *</label>
+                  <input type="number" id="mortToolDeadCount" oninput="calculateMortalityTool()" value="78" placeholder="e.g. 78" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-rose-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Chick Purchase Cost Each (<span class="currencyLabel">৳</span>)</label>
+                  <input type="number" step="any" id="mortToolChickCost" oninput="calculateMortalityTool()" value="42" placeholder="e.g. 42" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-rose-500 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Mortality Result Card -->
+            <div class="mt-6 pt-5 border-t border-slate-100 bg-slate-50 rounded-xl p-4 border border-slate-200">
+              <div class="grid grid-cols-2 gap-3 mb-2">
+                <div>
+                  <span class="text-xs font-bold text-slate-500">Mortality Rate:</span>
+                  <div id="mortToolMortalityRate" class="text-2xl font-extrabold text-rose-600 font-display">3.12%</div>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-500">Livability (Survival):</span>
+                  <div id="mortToolLivabilityRate" class="text-2xl font-extrabold text-emerald-600 font-display">96.88%</div>
+                </div>
+              </div>
+              <div id="mortToolStatusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <i class="fa-solid fa-check"></i> Normal Commercial Range (&lt; 3.5%)
+              </div>
+              <div class="mt-3 pt-3 border-t border-slate-200 text-xs text-slate-600">
+                Estimated Chick Capital Loss: <strong id="mortToolCapitalLoss" class="text-rose-600 font-bold">৳ 3,276</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 3: COST OF PRODUCTION (COP) PER KG CALCULATOR -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-sm">3</span>
+                  <h3 class="text-lg font-bold text-slate-900 font-display">Cost of Production (COP) per KG</h3>
+                </div>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                  Break-Even & Pricing
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">
+                Calculate the exact cost per kg of live chicken meat to set profitable wholesale and retail selling prices.
+              </p>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Total Flock Expenses (<span class="currencyLabel">৳</span>) *</label>
+                  <input type="number" step="any" id="copTotalExpense" oninput="calculateCOPTool()" value="389800" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Total Live KG Produced *</label>
+                  <input type="number" step="any" id="copTotalKg" oninput="calculateCOPTool()" value="2624" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                </div>
+
+                <div class="col-span-2">
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Expected Market Selling Rate per KG (<span class="currencyLabel">৳</span>)</label>
+                  <input type="number" step="any" id="copSellingRate" oninput="calculateCOPTool()" value="185" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- COP Result Card -->
+            <div class="mt-6 pt-5 border-t border-slate-100 bg-blue-50/60 rounded-xl p-4 border border-blue-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-blue-900">Cost of Production per KG:</span>
+                <span id="copResultPerKg" class="text-2xl font-extrabold text-blue-800 font-display">৳ 148.55 / kg</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 mt-2">
+                <span>Profit Margin per KG:</span>
+                <strong id="copProfitMarginPerKg" class="text-emerald-700 font-bold">+৳ 36.45 / kg (19.7%)</strong>
+              </div>
+              <div class="flex items-center justify-between text-xs text-slate-700 mt-1">
+                <span>Total Projected Net Profit:</span>
+                <strong id="copProjectedTotalProfit" class="text-emerald-700 font-extrabold">+৳ 95,645</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 4: EUROPEAN PRODUCTION EFFICIENCY FACTOR (EPEF / EEF) -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-sm">4</span>
+                  <h3 class="text-lg font-bold text-slate-900 font-display">EPEF / European Efficiency Factor</h3>
+                </div>
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                  Global Benchmark
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mb-4">
+                <strong>Formula:</strong> (Livability % × Live Weight kg) ÷ (Age Days × FCR) × 100. The standard international metric used by modern commercial poultry integrations.
+              </p>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Livability (%)</label>
+                  <input type="number" step="any" id="epefLivability" oninput="calculateEPEFTool()" value="96.8" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-purple-500 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Live Weight (kg)</label>
+                  <input type="number" step="any" id="epefWeight" oninput="calculateEPEFTool()" value="2.14" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-purple-500 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">Age in Days</label>
+                  <input type="number" id="epefAge" oninput="calculateEPEFTool()" value="37" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-purple-500 focus:outline-none" />
+                </div>
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">FCR</label>
+                  <input type="number" step="any" id="epefFCR" oninput="calculateEPEFTool()" value="1.42" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm font-semibold focus:ring-2 focus:ring-purple-500 focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- EPEF Result Card -->
+            <div class="mt-6 pt-5 border-t border-slate-100 bg-purple-50/60 rounded-xl p-4 border border-purple-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-purple-900">EPEF Index Score:</span>
+                <span id="epefScoreResult" class="text-2xl font-extrabold text-purple-800 font-display">394</span>
+              </div>
+              <div id="epefRatingBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <i class="fa-solid fa-crown text-amber-500"></i> World Class Flock (&gt; 350)
+              </div>
+              <div class="mt-3 pt-3 border-t border-purple-200/60 text-[11px] text-slate-500">
+                Scale: &gt;350: Excellent | 300-350: Good | 250-300: Fair | &lt;250: Poor
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Broiler Standard Reference Growth Guide -->
+        <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 font-display">Broiler Standard Growth & Feed Benchmark Chart</h3>
+              <p class="text-xs text-slate-500">Weekly target body weights, cumulative feed intake, and standard FCR reference (Cobb 500 / Ross 308 standards)</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">
+              Reference Standards
+            </span>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-100 text-slate-600 uppercase font-semibold text-[11px] tracking-wider border-b border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">Age (Days)</th>
+                  <th class="py-2.5 px-3">Stage / Feed Type</th>
+                  <th class="py-2.5 px-3">Daily Feed / Bird</th>
+                  <th class="py-2.5 px-3">Cumulative Feed</th>
+                  <th class="py-2.5 px-3">Target Body Weight</th>
+                  <th class="py-2.5 px-3">Standard FCR</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2 px-3 font-bold text-slate-800">Day 7 (Week 1)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold">Pre-Starter Crumbles</span></td>
+                  <td class="py-2 px-3">28 g</td>
+                  <td class="py-2 px-3">160 g</td>
+                  <td class="py-2 px-3 font-semibold text-slate-800">190 g - 210 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">0.80</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2 px-3 font-bold text-slate-800">Day 14 (Week 2)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold">Starter Mash / Pellet</span></td>
+                  <td class="py-2 px-3">55 g</td>
+                  <td class="py-2 px-3">510 g</td>
+                  <td class="py-2 px-3 font-semibold text-slate-800">460 g - 490 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">1.08</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2 px-3 font-bold text-slate-800">Day 21 (Week 3)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 text-[10px] font-semibold">Grower Pellet</span></td>
+                  <td class="py-2 px-3">95 g</td>
+                  <td class="py-2 px-3">1,120 g</td>
+                  <td class="py-2 px-3 font-semibold text-slate-800">920 g - 980 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">1.21</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2 px-3 font-bold text-slate-800">Day 28 (Week 4)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-teal-100 text-teal-800 text-[10px] font-semibold">Grower / Finisher</span></td>
+                  <td class="py-2 px-3">140 g</td>
+                  <td class="py-2 px-3">2,020 g</td>
+                  <td class="py-2 px-3 font-semibold text-slate-800">1,530 g - 1,600 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">1.32</td>
+                </tr>
+                <tr class="hover:bg-slate-50 bg-amber-50/40">
+                  <td class="py-2 px-3 font-bold text-slate-900">Day 35 (Week 5 - Harvest)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-semibold">Finisher Pellet</span></td>
+                  <td class="py-2 px-3">175 g</td>
+                  <td class="py-2 px-3 font-bold">3,180 g</td>
+                  <td class="py-2 px-3 font-extrabold text-emerald-800">2,100 g - 2,250 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">1.46</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="py-2 px-3 font-bold text-slate-800">Day 42 (Week 6 - Heavy)</td>
+                  <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-semibold">Finisher Pellet</span></td>
+                  <td class="py-2 px-3">195 g</td>
+                  <td class="py-2 px-3">4,550 g</td>
+                  <td class="py-2 px-3 font-semibold text-slate-800">2,800 g - 2,950 g</td>
+                  <td class="py-2 px-3 font-bold text-emerald-700">1.60</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="font-extrabold text-slate-900 font-display">YEASIN POULTRY</span>
+          <span>• Smart Farm Expense, Mortality & Profitability System</span>
+        </div>
+        <div class="flex items-center gap-4 text-slate-400">
+          <span>Local Storage Persistent</span>
+          <span>•</span>
+          <button onclick="exportJSONBackup()" class="hover:text-emerald-600 transition">Backup Farm Data</button>
+          <span>•</span>
+          <button onclick="resetToDemoData()" class="hover:text-amber-600 transition">Reset Demo Data</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- MODALS -->
+    <!-- ============================================================ -->
+
+    <!-- MODAL 1: ADD NEW BATCH -->
+    <div id="newBatchModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95">
+        <div class="flex items-center justify-between mb-5">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+              <i class="fa-solid fa-kiwi-bird"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-slate-900 font-display">Start New Poultry Batch</h3>
+              <p class="text-xs text-slate-500">Register a new flock for tracking expenses and sales</p>
+            </div>
+          </div>
+          <button onclick="closeModal('newBatchModal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg text-lg cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="newBatchForm" onsubmit="handleNewBatchSubmit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Batch Code / Title *</label>
+            <input type="text" id="newBatchName" required placeholder="e.g. Batch #15 - Cobb 500 Broiler" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Flock Breed / Type *</label>
+              <select id="newBatchBreed" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <option value="Cobb 500 Broiler">Cobb 500 Broiler</option>
+                <option value="Ross 308 Broiler">Ross 308 Broiler</option>
+                <option value="Hubbard Classic Broiler">Hubbard Classic Broiler</option>
+                <option value="Sonali / Fayoumi">Sonali / Crossbred</option>
+                <option value="Commercial Layer">Commercial Layer</option>
+                <option value="Deshi / Native">Deshi / Free Range</option>
+                <option value="Turkey / Duck">Turkey / Duck</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Start Date *</label>
+              <input type="date" id="newBatchStartDate" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Initial Bird Count *</label>
+              <input type="number" min="1" id="newBatchBirdCount" required placeholder="e.g. 2000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Est. Duration (Days) *</label>
+              <input type="number" min="1" id="newBatchDuration" required value="35" placeholder="e.g. 35" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Day-Old Chick Rate (<span class="currencyLabel">৳</span>)</label>
+              <input type="number" step="any" min="0" id="newBatchChickRate" placeholder="e.g. 42.00" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hatchery / Supplier</label>
+              <input type="text" id="newBatchSupplier" placeholder="e.g. CP, Kazi, Paragon" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+          </div>
+
+          <!-- Checkbox to auto-book chick expense -->
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-start gap-2.5">
+            <input type="checkbox" id="newBatchAutoBookChicks" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer" />
+            <label for="newBatchAutoBookChicks" class="text-xs text-slate-600 cursor-pointer">
+              <strong>Auto-record Chick purchase in Expenses:</strong> Automatically create an initial expense entry for (Chicks Count × Rate).
+            </label>
+          </div>
+
+          <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-200 flex items-start gap-2.5">
+            <input type="checkbox" id="newBatchSetAsActive" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer" />
+            <label for="newBatchSetAsActive" class="text-xs text-emerald-900 cursor-pointer">
+              <strong>Set as Current Active Running Batch:</strong> Immediately focus the dashboard on this new batch.
+            </label>
+          </div>
+
+          <div class="pt-3 flex items-center justify-end gap-3">
+            <button type="button" onclick="closeModal('newBatchModal')" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-100 transition cursor-pointer">
+              Cancel
+            </button>
+            <button type="submit" class="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-md transition flex items-center gap-2 cursor-pointer active:scale-95">
+              <i class="fa-solid fa-plus"></i> Create Batch
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL 2: COMPLETE BATCH CONFIRMATION -->
+    <div id="completeBatchModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95">
+        <div class="text-center mb-5">
+          <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center text-2xl mb-3">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 font-display">Complete & Close Batch?</h3>
+          <p class="text-xs text-slate-500 mt-1">This will finalize the financial ledger and archive the active batch into completed history.</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 space-y-2.5 text-xs text-slate-700 mb-5">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Batch Name:</span>
+            <strong id="closeModalBatchName" class="font-bold text-slate-900">Batch #14</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Total Revenue:</span>
+            <strong id="closeModalIncome" class="font-bold text-emerald-700">৳ 0</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Total Expenses:</span>
+            <strong id="closeModalExpense" class="font-bold text-rose-700">৳ 0</strong>
+          </div>
+          <div class="flex justify-between pt-2 border-t border-slate-200">
+            <span class="font-bold text-slate-800">Final Net Profit:</span>
+            <strong id="closeModalNetProfit" class="font-extrabold text-sm text-emerald-700">৳ 0</strong>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Final Harvest / Closure Date</label>
+          <input type="date" id="completeBatchEndDate" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm font-semibold mb-5 focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="closeModal('completeBatchModal')" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-sm font-semibold hover:bg-slate-100 transition cursor-pointer">
+            Cancel
+          </button>
+          <button type="button" onclick="confirmBatchCompletion()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold shadow-md transition flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+            <i class="fa-solid fa-check-double"></i> Mark Completed
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: BATCH DETAILED AUDIT REPORT MODAL -->
+    <div id="batchDetailModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-lg shadow-sm">
+              <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <div>
+              <h3 id="reportModalTitle" class="text-lg font-bold text-slate-900 font-display">Batch Audit & Performance Statement</h3>
+              <p id="reportModalSubtitle" class="text-xs text-slate-500">Comprehensive unit economics and ledger breakdown</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="printBatchReport()" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-print"></i> Print Report
+            </button>
+            <button onclick="closeModal('batchDetailModal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg text-lg cursor-pointer">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Report Body -->
+        <div id="batchReportPrintArea" class="p-6 overflow-y-auto space-y-6 flex-1 text-slate-800">
+          <!-- Dynamically populated report content -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT APPLICATION CODE -->
+    <!-- ============================================================ -->
+    <script>
+      /**
+       * YEASIN POULTRY MANAGEMENT SYSTEM
+       * Core Data Structure, LocalStorage Engine, Analytics, & Charts
+       */
+
+      const STORAGE_KEY = 'yeasin_poultry_data_v2';
+      let currentCurrency = '৳';
+
+      // Application State
+      let appData = {
+        activeBatchId: 'B-14',
+        currency: '৳',
+        batches: [],
+        expenses: [],
+        incomes: [],
+        mortalities: []
+      };
+
+      // Chart.js references for updating
+      let activeDoughnutChart = null;
+      let multiBatchProfitChartInstance = null;
+      let multiBatchSectorChartInstance = null;
+
+      // Initial Demo Data Seed
+      const DEMO_DATA = {
+        activeBatchId: 'B-14',
+        currency: '৳',
+        batches: [
+          {
+            id: 'B-12',
+            name: 'Batch #12 - Cobb 500 Broiler',
+            breed: 'Cobb 500 Broiler',
+            startDate: '2026-01-10',
+            endDate: '2026-02-17',
+            durationDays: 38,
+            initialBirds: 2000,
+            chickRate: 40.0,
+            supplier: 'CP Hatcheries Ltd.',
+            status: 'Completed',
+            totalFeedKg: 5800,
+            totalSoldWeightKg: 4120,
+            notes: 'High winter harvest, great FCR.'
+          },
+          {
+            id: 'B-13',
+            name: 'Batch #13 - Ross 308 Broiler',
+            breed: 'Ross 308 Broiler',
+            startDate: '2026-02-25',
+            endDate: '2026-04-03',
+            durationDays: 37,
+            initialBirds: 2500,
+            chickRate: 42.0,
+            supplier: 'Paragon Agro Ltd.',
+            status: 'Completed',
+            totalFeedKg: 7350,
+            totalSoldWeightKg: 5180,
+            notes: 'Spring batch, smooth vaccination schedule.'
+          },
+          {
+            id: 'B-14',
+            name: 'Batch #14 - Hubbard Classic Broiler',
+            breed: 'Hubbard Classic Broiler',
+            startDate: '2026-10-14',
+            endDate: '2026-11-18',
+            durationDays: 35,
+            initialBirds: 3000,
+            chickRate: 42.0,
+            supplier: 'Kazi Farms Group',
+            status: 'Active',
+            totalFeedKg: 7000,
+            totalSoldWeightKg: 650,
+            notes: 'Currently in finisher stage. Day 26.'
+          }
+        ],
+        expenses: [
+          // Batch 12 Expenses
+          { id: 'E-101', batchId: 'B-12', date: '2026-01-10', category: 'Chicks', title: 'Day-Old Chicks (2000 Cobb 500)', qty: '2000 chicks', amount: 80000, paymentMethod: 'Bank Transfer', notes: 'CP delivery' },
+          { id: 'E-102', batchId: 'B-12', date: '2026-01-14', category: 'Feed', title: 'Broiler Starter Feed (40 bags)', qty: '40 Bags (2000 kg)', amount: 86000, paymentMethod: 'Cash', notes: 'Al-Madina Feeds' },
+          { id: 'E-103', batchId: 'B-12', date: '2026-01-22', category: 'Feed', title: 'Broiler Grower Feed (46 bags)', qty: '46 Bags (2300 kg)', amount: 96600, paymentMethod: 'Cash', notes: 'Grower phase' },
+          { id: 'E-104', batchId: 'B-12', date: '2026-02-04', category: 'Feed', title: 'Broiler Finisher Feed (30 bags)', qty: '30 Bags (1500 kg)', amount: 61000, paymentMethod: 'Cash', notes: 'Final phase' },
+          { id: 'E-105', batchId: 'B-12', date: '2026-01-13', category: 'Vaccine', title: 'ND + IBD Vaccines & Eyedroppers', qty: '4 Vials', amount: 9500, paymentMethod: 'Cash', notes: 'B1 & Gumboro' },
+          { id: 'E-106', batchId: 'B-12', date: '2026-01-25', category: 'Medicine', title: 'Vitamins AD3E, Electrolyte & Antibiotics', qty: 'Bottles', amount: 13000, paymentMethod: 'Cash', notes: 'Vet prescription' },
+          { id: 'E-107', batchId: 'B-12', date: '2026-02-16', category: 'Labor', title: 'Attendant & Farm Labor Wages', qty: '1 Person 38 days', amount: 18000, paymentMethod: 'Cash', notes: 'Laborer Abdul' },
+          { id: 'E-108', batchId: 'B-12', date: '2026-02-16', category: 'Electricity', title: 'Electricity & Gas Brooding Cylinders', qty: '2 Cylinders + Bill', amount: 14200, paymentMethod: 'bKash / Mobile Banking', notes: 'Winter heater' },
+          { id: 'E-109', batchId: 'B-12', date: '2026-01-09', category: 'Bedding', title: 'Rice Husk Bedding Material', qty: '45 Sacks', amount: 6500, paymentMethod: 'Cash', notes: 'Litter' },
+          { id: 'E-110', batchId: 'B-12', date: '2026-02-17', category: 'Others', title: 'Disinfectants, Lime, Sprayer & Cartage', qty: 'Lump-sum', amount: 5000, paymentMethod: 'Cash', notes: 'Biosecurity' },
+
+          // Batch 13 Expenses
+          { id: 'E-201', batchId: 'B-13', date: '2026-02-25', category: 'Chicks', title: 'Day-Old Chicks (2500 Ross 308)', qty: '2500 chicks', amount: 105000, paymentMethod: 'Bank Transfer', notes: 'Paragon invoice' },
+          { id: 'E-202', batchId: 'B-13', date: '2026-03-02', category: 'Feed', title: 'Starter Feed (50 bags)', qty: '50 Bags (2500 kg)', amount: 107500, paymentMethod: 'Cash', notes: 'Feed lot 1' },
+          { id: 'E-203', batchId: 'B-13', date: '2026-03-14', category: 'Feed', title: 'Grower Feed (57 bags)', qty: '57 Bags (2850 kg)', amount: 119700, paymentMethod: 'Cash', notes: 'Feed lot 2' },
+          { id: 'E-204', batchId: 'B-13', date: '2026-03-26', category: 'Feed', title: 'Finisher Feed (40 bags)', qty: '40 Bags (2000 kg)', amount: 82000, paymentMethod: 'Cash', notes: 'Feed lot 3' },
+          { id: 'E-205', batchId: 'B-13', date: '2026-03-01', category: 'Vaccine', title: 'Gumboro + Lasota + Biosecurity', qty: '6 Vials', amount: 11500, paymentMethod: 'Cash', notes: 'Vaccines' },
+          { id: 'E-206', batchId: 'B-13', date: '2026-03-18', category: 'Medicine', title: 'Liver Tonic, Calcium & Vitamin C', qty: 'Liquid', amount: 15500, paymentMethod: 'Cash', notes: 'Medication' },
+          { id: 'E-207', batchId: 'B-13', date: '2026-04-02', category: 'Labor', title: 'Farm Attendant Salary & Helpers', qty: 'Monthly', amount: 20000, paymentMethod: 'Cash', notes: 'Wages' },
+          { id: 'E-208', batchId: 'B-13', date: '2026-04-02', category: 'Electricity', title: 'Electricity Bill & Generator Fuel', qty: 'Month', amount: 16500, paymentMethod: 'bKash / Mobile Banking', notes: 'Power' },
+          { id: 'E-209', batchId: 'B-13', date: '2026-02-24', category: 'Bedding', title: 'Rice Husk Sacks (50 sacks)', qty: '50 Sacks', amount: 7500, paymentMethod: 'Cash', notes: 'Bedding' },
+          { id: 'E-210', batchId: 'B-13', date: '2026-04-03', category: 'Transport', title: 'Transport & Marketing Logistics', qty: 'Pickups', amount: 13000, paymentMethod: 'Cash', notes: 'Wholesale' },
+
+          // Batch 14 (ACTIVE BATCH) Expenses
+          { id: 'E-301', batchId: 'B-14', date: '2026-10-14', category: 'Chicks', title: 'Day-Old Chicks (3000 Hubbard Classic)', qty: '3000 chicks', amount: 126000, paymentMethod: 'Bank Transfer', notes: 'Kazi Farms Group' },
+          { id: 'E-302', batchId: 'B-14', date: '2026-10-18', category: 'Feed', title: 'Broiler Pre-Starter & Starter Feed (55 bags)', qty: '55 Bags (2750 kg)', amount: 118250, paymentMethod: 'Cash', notes: 'Initial feed' },
+          { id: 'E-303', batchId: 'B-14', date: '2026-10-29', category: 'Feed', title: 'Broiler Grower Pellet Feed (55 bags)', qty: '55 Bags (2750 kg)', amount: 115500, paymentMethod: 'Cash', notes: 'Grower ration' },
+          { id: 'E-304', batchId: 'B-14', date: '2026-11-04', category: 'Feed', title: 'Broiler Finisher Feed (30 bags)', qty: '30 Bags (1500 kg)', amount: 61500, paymentMethod: 'Supplier Credit (Due)', notes: 'Finisher stage' },
+          { id: 'E-305', batchId: 'B-14', date: '2026-10-18', category: 'Vaccine', title: 'Ranikhet & Gumboro Schedule', qty: '6 Doses', amount: 12500, paymentMethod: 'Cash', notes: 'Cold chain verified' },
+          { id: 'E-306', batchId: 'B-14', date: '2026-10-27', category: 'Medicine', title: 'Electrolytes, Kidney Tonic & Antibiotics', qty: 'Pack', amount: 14500, paymentMethod: 'Cash', notes: 'Stress reliever' },
+          { id: 'E-307', batchId: 'B-14', date: '2026-11-05', category: 'Labor', title: 'Farm Staff Advance Wages', qty: 'Part salary', amount: 12000, paymentMethod: 'Cash', notes: 'Mid-term pay' },
+          { id: 'E-308', batchId: 'B-14', date: '2026-11-06', category: 'Electricity', title: 'Electricity Brooding & Fan Usage', qty: 'Units', amount: 9650, paymentMethod: 'bKash / Mobile Banking', notes: 'Pre-paid meter' },
+          { id: 'E-309', batchId: 'B-14', date: '2026-10-13', category: 'Bedding', title: 'Dry Rice Husk 60 Bags', qty: '60 Sacks', amount: 8500, paymentMethod: 'Cash', notes: 'Dry floor' },
+          { id: 'E-310', batchId: 'B-14', date: '2026-10-15', category: 'Others', title: 'Lime Powder & Formocid Spray', qty: 'Lump-sum', amount: 4500, paymentMethod: 'Cash', notes: 'Shed disinfection' }
+        ],
+        incomes: [
+          // Batch 12 Incomes (Completed)
+          { id: 'I-101', batchId: 'B-12', date: '2026-02-16', type: 'Live Broiler', buyer: 'M/S Bismillah Chicken, Karwan Bazar', birdsCount: 1200, weightKg: 2580, pricePerKg: 118.0, totalAmount: 304440, paymentStatus: 'Paid in Full', notes: 'First major lot' },
+          { id: 'I-102', batchId: 'B-12', date: '2026-02-17', type: 'Live Broiler', buyer: 'Mirpur Wholesale Poultry Market', birdsCount: 736, weightKg: 1540, pricePerKg: 120.0, totalAmount: 184800, paymentStatus: 'Paid in Full', notes: 'Final clearance' },
+          { id: 'I-103', batchId: 'B-12', date: '2026-02-18', type: 'Poultry Litter / Manure', buyer: 'Local Fish Farmer', birdsCount: 0, weightKg: 0, pricePerKg: 0, totalAmount: 4800, paymentStatus: 'Paid in Full', notes: 'Fish pond manure' },
+          { id: 'I-104', batchId: 'B-12', date: '2026-02-18', type: 'Empty Feed Bags', buyer: 'Plastic Scrap Dealer', birdsCount: 116, weightKg: 0, pricePerKg: 20.0, totalAmount: 2360, paymentStatus: 'Paid in Full', notes: '116 feed sacks' },
+
+          // Batch 13 Incomes (Completed)
+          { id: 'I-201', batchId: 'B-13', date: '2026-04-01', type: 'Live Broiler', buyer: 'Al-Amin Broiler Traders', birdsCount: 1500, weightKg: 3225, pricePerKg: 122.0, totalAmount: 393450, paymentStatus: 'Paid in Full', notes: 'Lot 1' },
+          { id: 'I-202', batchId: 'B-13', date: '2026-04-03', type: 'Live Broiler', buyer: 'Kaptan Bazar Wholesaler', birdsCount: 922, weightKg: 1955, pricePerKg: 121.0, totalAmount: 236555, paymentStatus: 'Paid in Full', notes: 'Lot 2 complete' },
+          { id: 'I-203', batchId: 'B-13', date: '2026-04-04', type: 'Empty Feed Bags', buyer: 'Sack Buyer', birdsCount: 147, weightKg: 0, pricePerKg: 17.0, totalAmount: 2499, paymentStatus: 'Paid in Full', notes: '147 sacks' },
+
+          // Batch 14 Incomes (Active Batch - Early Thinning / Advance)
+          { id: 'I-301', batchId: 'B-14', date: '2026-11-06', type: 'Live Broiler', buyer: 'Local Hotel Contract (Early Thinning)', birdsCount: 320, weightKg: 650, pricePerKg: 192.30, totalAmount: 125000, paymentStatus: 'Paid in Full', notes: 'Light thinning at day 24' }
+        ],
+        mortalities: [
+          // Batch 12 Mortalities (64 birds dead over cycle)
+          { id: 'M-101', batchId: 'B-12', date: '2026-01-12', count: 18, cause: 'Weak Day-Old Chick', notes: 'First 48h brooding mortality' },
+          { id: 'M-102', batchId: 'B-12', date: '2026-01-20', count: 14, cause: 'Normal / Natural Culling', notes: 'Weak leg chicks' },
+          { id: 'M-103', batchId: 'B-12', date: '2026-01-31', count: 20, cause: 'Ascites (Water Belly)', notes: 'Winter cold stress' },
+          { id: 'M-104', batchId: 'B-12', date: '2026-02-10', count: 12, cause: 'Sudden Death Syndrome (Flip-Over)', notes: 'Heavy birds' },
+
+          // Batch 13 Mortalities (78 birds dead over cycle)
+          { id: 'M-201', batchId: 'B-13', date: '2026-02-27', count: 22, cause: 'Weak Day-Old Chick', notes: 'Hatchery cull' },
+          { id: 'M-202', batchId: 'B-13', date: '2026-03-10', count: 28, cause: 'Heat Stress / Suffocation', notes: 'Sudden hot afternoon' },
+          { id: 'M-203', batchId: 'B-13', date: '2026-03-22', count: 18, cause: 'Normal / Natural Culling', notes: 'Natural' },
+          { id: 'M-204', batchId: 'B-13', date: '2026-03-30', count: 10, cause: 'Sudden Death Syndrome (Flip-Over)', notes: 'Large birds' },
+
+          // Batch 14 (Active) Mortalities (48 dead so far)
+          { id: 'M-301', batchId: 'B-14', date: '2026-10-16', count: 19, cause: 'Weak Day-Old Chick', notes: 'Brooding phase losses' },
+          { id: 'M-302', batchId: 'B-14', date: '2026-10-25', count: 14, cause: 'Normal / Natural Culling', notes: 'Runt chicks culled' },
+          { id: 'M-303', batchId: 'B-14', date: '2026-11-03', count: 15, cause: 'Heat Stress / Suffocation', notes: 'Fan failure resolved within 1 hr' }
+        ]
+      };
+
+      /**
+       * Initialization
+       */
+      window.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        setupDefaultDates();
+        initCurrencySelector();
+        renderAll();
+      });
+
+      function loadData() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          try {
+            appData = JSON.parse(stored);
+          } catch (e) {
+            console.error('Error parsing stored data, using demo:', e);
+            appData = JSON.parse(JSON.stringify(DEMO_DATA));
+            saveData();
+          }
+        } else {
+          appData = JSON.parse(JSON.stringify(DEMO_DATA));
+          saveData();
+        }
+
+        if (appData.currency) {
+          currentCurrency = appData.currency;
+        }
+      }
+
+      function saveData() {
+        appData.currency = currentCurrency;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      }
+
+      function resetToDemoData() {
+        if (confirm('Are you sure you want to reset all farm data to sample demo batches? Current custom records will be replaced.')) {
+          appData = JSON.parse(JSON.stringify(DEMO_DATA));
+          saveData();
+          renderAll();
+          showToast('Sample Demo Data Loaded Successfully!', 'success');
+        }
+      }
+
+      function setupDefaultDates() {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInputs = ['expenseDate', 'incomeDate', 'mortalityDate', 'newBatchStartDate', 'completeBatchEndDate'];
+        dateInputs.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && !el.value) el.value = today;
+        });
+      }
+
+      function initCurrencySelector() {
+        const sel = document.getElementById('currencySelector');
+        if (sel) {
+          sel.value = currentCurrency;
+          sel.addEventListener('change', (e) => {
+            currentCurrency = e.target.value;
+            appData.currency = currentCurrency;
+            saveData();
+            updateCurrencyLabels();
+            renderAll();
+            showToast(`Currency changed to ${currentCurrency}`, 'info');
+          });
+        }
+        updateCurrencyLabels();
+      }
+
+      function updateCurrencyLabels() {
+        document.querySelectorAll('.currencyLabel').forEach(el => {
+          el.textContent = currentCurrency;
+        });
+      }
+
+      function formatMoney(amount) {
+        const val = Number(amount) || 0;
+        return `${currentCurrency} ${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+      }
+
+      /**
+       * Global Render Controller
+       */
+      function renderAll() {
+        updateCurrencyLabels();
+        populateBatchSelectors();
+        renderRunningBatchDashboard();
+        renderTransactionHistoryTable();
+        renderAllBatchesAnalytics();
+        calculateFCRTool();
+        calculateMortalityTool();
+        calculateCOPTool();
+        calculateEPEFTool();
+      }
+
+      /**
+       * TAB SWITCHING
+       */
+      function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        const target = document.getElementById(tabId);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-sm');
+          btn.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+        });
+
+        const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+        if (activeBtn) {
+          activeBtn.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+          activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+        }
+
+        // Re-render specific tab visuals (like charts)
+        if (tabId === 'runningBatchTab') {
+          renderRunningBatchDashboard();
+        } else if (tabId === 'allBatchesTab') {
+          renderAllBatchesAnalytics();
+        } else if (tabId === 'entryTab') {
+          renderTransactionHistoryTable();
+        }
+      }
+
+      function switchEntrySubTab(subTabId) {
+        document.querySelectorAll('.sub-tab-content').forEach(el => el.classList.add('hidden'));
+        const target = document.getElementById(subTabId);
+        if (target) target.classList.remove('hidden');
+
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+          btn.classList.remove('bg-rose-600', 'bg-emerald-600', 'bg-slate-800', 'bg-blue-600', 'text-white', 'shadow-sm');
+          btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+        });
+
+        const activeBtn = document.getElementById(`subTabBtn-${subTabId}`);
+        if (activeBtn) {
+          activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+          if (subTabId === 'expenseSubTab') activeBtn.classList.add('bg-rose-600', 'text-white', 'shadow-sm');
+          if (subTabId === 'incomeSubTab') activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-sm');
+          if (subTabId === 'mortalitySubTab') activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow-sm');
+          if (subTabId === 'historySubTab') activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+        }
+
+        if (subTabId === 'historySubTab') {
+          renderTransactionHistoryTable();
+        }
+      }
+
+      /**
+       * Dropdown Syncing
+       */
+      function populateBatchSelectors() {
+        const batchSelects = [
+          'expenseBatchId',
+          'incomeBatchId',
+          'mortalityBatchId',
+          'entryBatchSelectGlobal',
+          'historyFilterBatch'
+        ];
+
+        const activeBatch = getActiveBatch();
+        const activeBatchId = activeBatch ? activeBatch.id : '';
+
+        batchSelects.forEach(selId => {
+          const sel = document.getElementById(selId);
+          if (!sel) return;
+
+          const currentVal = sel.value;
+          sel.innerHTML = '';
+
+          if (selId === 'historyFilterBatch') {
+            const optAll = document.createElement('option');
+            optAll.value = 'All';
+            optAll.textContent = 'All Batches';
+            sel.appendChild(optAll);
+          }
+
+          appData.batches.forEach(b => {
+            const opt = document.createElement('option');
+            opt.value = b.id;
+            opt.textContent = `${b.name} (${b.status})`;
+            if (b.id === activeBatchId && selId !== 'historyFilterBatch' && !currentVal) {
+              opt.selected = true;
+            } else if (currentVal === b.id) {
+              opt.selected = true;
+            }
+            sel.appendChild(opt);
+          });
+        });
+
+        // Set global entry dropdown
+        const globalEntrySel = document.getElementById('entryBatchSelectGlobal');
+        if (globalEntrySel && activeBatchId) {
+          globalEntrySel.value = activeBatchId;
+        }
+      }
+
+      function syncEntryBatchDropdowns(batchId) {
+        ['expenseBatchId', 'incomeBatchId', 'mortalityBatchId'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = batchId;
+        });
+      }
+
+      function getActiveBatch() {
+        let batch = appData.batches.find(b => b.id === appData.activeBatchId);
+        if (!batch) {
+          batch = appData.batches.find(b => b.status === 'Active');
+          if (batch) appData.activeBatchId = batch.id;
+        }
+        return batch || appData.batches[0];
+      }
+
+      /**
+       * ============================================================
+       * RUNNING BATCH DASHBOARD RENDERER (ACTIVE BATCH ONLY)
+       * ============================================================
+       */
+      function renderRunningBatchDashboard() {
+        const batch = getActiveBatch();
+        if (!batch) {
+          document.getElementById('runningBatchTab').innerHTML = `
+            <div class="bg-white rounded-2xl p-12 text-center border border-slate-200">
+              <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center text-3xl mb-4">
+                <i class="fa-solid fa-kiwi-bird"></i>
+              </div>
+              <h2 class="text-xl font-bold text-slate-800">No Active Running Batch Found</h2>
+              <p class="text-sm text-slate-500 max-w-md mx-auto mt-2">Start a new poultry batch to track real-time feed intake, daily mortality, sector-wise expenses, and live harvest sales.</p>
+              <button onclick="openModal('newBatchModal')" class="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-2.5 rounded-xl transition inline-flex items-center gap-2 cursor-pointer shadow-md">
+                <i class="fa-solid fa-plus"></i> Start Your First Batch
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        // Header indicator updates
+        const headerName = document.getElementById('headerBatchName');
+        if (headerName) headerName.textContent = batch.name.split('-')[0].trim();
+        
+        // Calculate Age & Days
+        const startDate = new Date(batch.startDate);
+        const today = new Date();
+        const diffTime = Math.abs(today - startDate);
+        const ageDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+        const targetDays = batch.durationDays || 35;
+        const progressPct = Math.min(100, Math.round((ageDays / targetDays) * 100));
+
+        const headerAge = document.getElementById('headerBatchAge');
+        if (headerAge) headerAge.textContent = `Day ${ageDays}`;
+
+        // Top Card Elements
+        document.getElementById('activeBatchTitle').textContent = batch.name;
+        document.getElementById('activeBatchBreedBadge').textContent = batch.breed || 'Commercial Broiler';
+        document.getElementById('activeBatchStartDate').textContent = batch.startDate;
+        
+        // Target end date calculation
+        const endDateObj = new Date(startDate);
+        endDateObj.setDate(startDate.getDate() + targetDays);
+        document.getElementById('activeBatchEndDate').textContent = batch.endDate || endDateObj.toISOString().split('T')[0];
+        document.getElementById('activeBatchInitialCount').textContent = `${(batch.initialBirds || 0).toLocaleString()} Birds`;
+
+        // Progress elements
+        document.getElementById('activeBatchDayLabel').textContent = `Day ${ageDays} of ${targetDays} Days`;
+        document.getElementById('activeBatchPercentLabel').textContent = `${progressPct}% Completed`;
+        document.getElementById('activeBatchProgressBar').style.width = `${progressPct}%`;
+
+        // Calculate Active Batch Financials
+        const batchExpenses = appData.expenses.filter(e => e.batchId === batch.id);
+        const batchIncomes = appData.incomes.filter(i => i.batchId === batch.id);
+        const batchMortalities = appData.mortalities.filter(m => m.batchId === batch.id);
+
+        const totalExpense = batchExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        const totalIncome = batchIncomes.reduce((sum, i) => sum + (Number(i.totalAmount) || 0), 0);
+        const netProfit = totalIncome - totalExpense;
+
+        const totalSoldKg = batchIncomes.reduce((sum, i) => sum + (Number(i.weightKg) || 0), 0);
+        const totalSoldBirds = batchIncomes.reduce((sum, i) => sum + (Number(i.birdsCount) || 0), 0);
+        const totalDeadBirds = batchMortalities.reduce((sum, m) => sum + (Number(m.count) || 0), 0);
+        const initialBirds = batch.initialBirds || 1;
+        const aliveBirds = Math.max(0, initialBirds - totalDeadBirds - totalSoldBirds);
+        const mortalityRate = ((totalDeadBirds / initialBirds) * 100).toFixed(2);
+
+        // Update Stat Cards
+        document.getElementById('dashActiveIncome').textContent = formatMoney(totalIncome);
+        document.getElementById('dashActiveIncomeSub').textContent = `${totalSoldKg.toLocaleString()} kg sold (${totalSoldBirds.toLocaleString()} birds)`;
+
+        const avgRate = totalSoldKg > 0 ? (totalIncome / totalSoldKg).toFixed(2) : '0.00';
+        document.getElementById('dashActiveAvgRate').textContent = `${currentCurrency} ${avgRate} / kg`;
+
+        document.getElementById('dashActiveExpense').textContent = formatMoney(totalExpense);
+        const costPerAliveBird = aliveBirds > 0 ? (totalExpense / aliveBirds).toFixed(2) : '0.00';
+        document.getElementById('dashActiveCostPerBird').textContent = `${currentCurrency} ${costPerAliveBird} / bird`;
+
+        const netEl = document.getElementById('dashActiveNetProfit');
+        if (netProfit >= 0) {
+          netEl.textContent = `+${formatMoney(netProfit)}`;
+          netEl.className = 'text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1 font-display';
+          document.getElementById('dashActiveNetSub').innerHTML = `<i class="fa-solid fa-arrow-trend-up text-emerald-500 mr-1"></i> Net Positive Margin`;
+        } else {
+          netEl.textContent = formatMoney(netProfit);
+          netEl.className = 'text-2xl sm:text-3xl font-extrabold text-rose-600 mt-1 font-display';
+          document.getElementById('dashActiveNetSub').innerHTML = `<i class="fa-solid fa-hourglass-half text-amber-500 mr-1"></i> Pre-Harvest Rearing Stage`;
+        }
+
+        // Projected harvest profit: (aliveBirds * ~2.15kg * avgMarketRate 185) - totalExpense
+        const projectedWeight = aliveBirds * 2.15;
+        const projectedRevenue = totalIncome + (projectedWeight * 180);
+        const projectedProfit = projectedRevenue - (totalExpense + (aliveBirds * 25)); // adding remaining feed cost
+        document.getElementById('dashActiveProjectedProfit').textContent = `~ +${formatMoney(Math.max(0, projectedProfit))}`;
+
+        // Mortality Card
+        document.getElementById('dashActiveMortalityCount').textContent = `${totalDeadBirds.toLocaleString()} Dead`;
+        const mortBadge = document.getElementById('dashActiveMortalityRateBadge');
+        if (Number(mortalityRate) <= 3.0) {
+          mortBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800';
+          mortBadge.textContent = `${mortalityRate}% (Healthy)`;
+        } else if (Number(mortalityRate) <= 5.0) {
+          mortBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800';
+          mortBadge.textContent = `${mortalityRate}% (Caution)`;
+        } else {
+          mortBadge.className = 'inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800';
+          mortBadge.textContent = `${mortalityRate}% (High Risk)`;
+        }
+
+        const survivalPct = (((initialBirds - totalDeadBirds) / initialBirds) * 100).toFixed(1);
+        document.getElementById('dashActiveAliveBirds').textContent = `${aliveBirds.toLocaleString()} Alive (${survivalPct}%)`;
+
+        // Secondary metrics: Feed, FCR estimate
+        const feedExpenses = batchExpenses.filter(e => e.category === 'Feed');
+        const feedCost = feedExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        // Estimate feed bags from cost (~2100 per bag) or explicit entries
+        const feedBags = Math.round(feedCost / 2100) || 140;
+        const feedKg = feedBags * 50;
+        document.getElementById('dashActiveFeedTotal').textContent = `${feedBags} Bags (${feedKg.toLocaleString()} kg)`;
+
+        const currentEstBiomass = (aliveBirds * 2.15) + totalSoldKg;
+        const currentFCR = currentEstBiomass > 0 ? (feedKg / currentEstBiomass).toFixed(2) : '1.48';
+        document.getElementById('dashActiveFCR').textContent = `${currentFCR} (Excellent)`;
+
+        const currentCostPerKg = currentEstBiomass > 0 ? (totalExpense / currentEstBiomass).toFixed(2) : '145.00';
+        document.getElementById('dashActiveCostPerKg').textContent = `${currentCurrency} ${currentCostPerKg} / kg`;
+
+        // Render Sector Expense Breakdown & Chart
+        renderActiveBatchSectorBreakdown(batchExpenses, totalExpense);
+
+        // Render Recent Activity Logs
+        renderActiveBatchRecentLogs(batchExpenses, batchIncomes, batchMortalities);
+      }
+
+      function renderActiveBatchSectorBreakdown(expenses, totalExpense) {
+        const categories = ['Feed', 'Chicks', 'Vaccine', 'Medicine', 'Labor', 'Electricity', 'Bedding', 'Transport', 'Equipment', 'Others'];
+        const categoryColors = {
+          'Feed': '#10b981',       // Emerald
+          'Chicks': '#f59e0b',     // Amber
+          'Vaccine': '#3b82f6',    // Blue
+          'Medicine': '#8b5cf6',   // Purple
+          'Labor': '#06b6d4',      // Cyan
+          'Electricity': '#ec4899',// Pink
+          'Bedding': '#84cc16',    // Lime
+          'Transport': '#64748b',  // Slate
+          'Equipment': '#14b8a6',  // Teal
+          'Others': '#94a3b8'      // Gray
+        };
+
+        const sectorTotals = {};
+        categories.forEach(cat => sectorTotals[cat] = 0);
+        expenses.forEach(e => {
+          const cat = e.category || 'Others';
+          sectorTotals[cat] = (sectorTotals[cat] || 0) + (Number(e.amount) || 0);
+        });
+
+        // Filter categories with amounts > 0
+        const activeSectors = Object.entries(sectorTotals)
+          .filter(([cat, amount]) => amount > 0)
+          .sort((a, b) => b[1] - a[1]);
+
+        // Build list
+        const listContainer = document.getElementById('activeCategoryBreakdownList');
+        if (listContainer) {
+          listContainer.innerHTML = '';
+          if (activeSectors.length === 0) {
+            listContainer.innerHTML = '<p class="text-xs text-slate-400 py-4 text-center">No expenses recorded yet for this batch.</p>';
+          } else {
+            activeSectors.forEach(([cat, amount]) => {
+              const pct = totalExpense > 0 ? ((amount / totalExpense) * 100).toFixed(1) : 0;
+              const color = categoryColors[cat] || '#64748b';
+              const div = document.createElement('div');
+              div.className = 'space-y-1';
+              div.innerHTML = `
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${color}"></span>
+                    <span class="font-semibold text-slate-700">${cat}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-bold text-slate-800">${formatMoney(amount)}</span>
+                    <span class="text-[11px] text-slate-400 font-medium w-10 text-right">(${pct}%)</span>
+                  </div>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div class="h-full rounded-full" style="width: ${pct}%; background-color: ${color}"></div>
+                </div>
+              `;
+              listContainer.appendChild(div);
+            });
+          }
+        }
+
+        // Render Doughnut Chart
+        const chartCanvas = document.getElementById('activeSectorChart');
+        if (!chartCanvas) return;
+
+        const labels = activeSectors.map(s => s[0]);
+        const dataValues = activeSectors.map(s => s[1]);
+        const bgColors = activeSectors.map(s => categoryColors[s[0]] || '#94a3b8');
+
+        if (activeDoughnutChart) {
+          activeDoughnutChart.destroy();
+        }
+
+        const ctx = chartCanvas.getContext('2d');
+        activeDoughnutChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: labels.length > 0 ? labels : ['No Data'],
+            datasets: [{
+              data: dataValues.length > 0 ? dataValues : [1],
+              backgroundColor: bgColors.length > 0 ? bgColors : ['#e2e8f0'],
+              borderWidth: 2,
+              borderColor: '#ffffff',
+              hoverOffset: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const label = context.label || '';
+                    const val = context.raw || 0;
+                    const pct = totalExpense > 0 ? ((val / totalExpense) * 100).toFixed(1) : 0;
+                    return ` ${label}: ${currentCurrency} ${val.toLocaleString()} (${pct}%)`;
+                  }
+                }
+              }
+            },
+            cutout: '72%'
+          }
+        });
+      }
+
+      function renderActiveBatchRecentLogs(expenses, incomes, mortalities) {
+        const container = document.getElementById('activeBatchRecentLogsList');
+        if (!container) return;
+        container.innerHTML = '';
+
+        // Combine logs
+        const allLogs = [
+          ...expenses.map(e => ({ ...e, logType: 'Expense', timestamp: new Date(e.date).getTime() })),
+          ...incomes.map(i => ({ ...i, logType: 'Income', timestamp: new Date(i.date).getTime() })),
+          ...mortalities.map(m => ({ ...m, logType: 'Mortality', timestamp: new Date(m.date).getTime() }))
+        ].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
+
+        if (allLogs.length === 0) {
+          container.innerHTML = '<p class="text-xs text-slate-400 py-6 text-center">No transactions recorded yet.</p>';
+          return;
+        }
+
+        allLogs.forEach(log => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition text-xs';
+
+          if (log.logType === 'Expense') {
+            div.innerHTML = `
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center text-xs flex-shrink-0">
+                  <i class="fa-solid fa-arrow-down"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 truncate max-w-[160px] sm:max-w-[190px]">${log.title || log.category}</p>
+                  <p class="text-[10px] text-slate-400">${log.date} • ${log.category}</p>
+                </div>
+              </div>
+              <span class="font-bold text-rose-600 font-display">-${formatMoney(log.amount)}</span>
+            `;
+          } else if (log.logType === 'Income') {
+            div.innerHTML = `
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs flex-shrink-0">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 truncate max-w-[160px] sm:max-w-[190px]">${log.buyer || log.type}</p>
+                  <p class="text-[10px] text-slate-400">${log.date} • ${log.weightKg || 0} kg</p>
+                </div>
+              </div>
+              <span class="font-bold text-emerald-600 font-display">+${formatMoney(log.totalAmount)}</span>
+            `;
+          } else {
+            div.innerHTML = `
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center text-xs flex-shrink-0">
+                  <i class="fa-solid fa-skull text-rose-500"></i>
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 truncate max-w-[160px] sm:max-w-[190px]">${log.cause}</p>
+                  <p class="text-[10px] text-slate-400">${log.date} • Flock Loss</p>
+                </div>
+              </div>
+              <span class="font-bold text-slate-800 font-display">${log.count} Birds</span>
+            `;
+          }
+
+          container.appendChild(div);
+        });
+      }
+
+      /**
+       * Quick Navigation Shortcuts
+       */
+      function quickOpenExpenseForActive() {
+        switchTab('entryTab');
+        switchEntrySubTab('expenseSubTab');
+      }
+
+      function quickOpenIncomeForActive() {
+        switchTab('entryTab');
+        switchEntrySubTab('incomeSubTab');
+      }
+
+      function quickOpenMortalityForActive() {
+        switchTab('entryTab');
+        switchEntrySubTab('mortalitySubTab');
+      }
+
+      /**
+       * ============================================================
+       * FORMS & TRANSACTION HANDLERS
+       * ============================================================
+       */
+
+      // Auto calculations for income form
+      function calculateIncomeAutoValues() {
+        const birds = Number(document.getElementById('incomeBirdsCount').value) || 0;
+        const totalWeight = Number(document.getElementById('incomeTotalWeight').value) || 0;
+        const pricePerKg = Number(document.getElementById('incomePricePerKg').value) || 0;
+
+        const avgEl = document.getElementById('incomeComputedAvgWeight');
+        if (birds > 0 && totalWeight > 0) {
+          const avg = (totalWeight / birds).toFixed(2);
+          avgEl.textContent = `${avg} kg / bird`;
+        } else {
+          avgEl.textContent = '0.00 kg';
+        }
+
+        const totalAmtInput = document.getElementById('incomeTotalAmount');
+        if (totalWeight > 0 && pricePerKg > 0) {
+          totalAmtInput.value = (totalWeight * pricePerKg).toFixed(2);
+        }
+      }
+
+      function handleIncomeTypeChange(type) {
+        const birdsCountLabel = document.querySelector('label[for="incomeBirdsCount"]');
+        if (type.includes('Egg')) {
+          document.getElementById('incomeBirdsCount').placeholder = 'e.g. 50 Trays (30 eggs/tray)';
+        } else if (type.includes('Bags')) {
+          document.getElementById('incomeBirdsCount').placeholder = 'e.g. 100 bags';
+        } else {
+          document.getElementById('incomeBirdsCount').placeholder = 'e.g. 500 birds';
+        }
+      }
+
+      // Handle Expense Form Submit
+      function handleExpenseSubmit(e) {
+        e.preventDefault();
+        const batchId = document.getElementById('expenseBatchId').value;
+        const date = document.getElementById('expenseDate').value;
+        const category = document.getElementById('expenseCategory').value;
+        const amount = Number(document.getElementById('expenseAmount').value) || 0;
+        const title = document.getElementById('expenseTitle').value;
+        const qty = document.getElementById('expenseQty').value;
+        const paymentMethod = document.getElementById('expensePaymentMethod').value;
+        const notes = document.getElementById('expenseNotes').value;
+
+        if (amount <= 0) {
+          showToast('Please enter a valid expense amount.', 'error');
+          return;
+        }
+
+        const newExpense = {
+          id: 'E-' + Date.now(),
+          batchId,
+          date,
+          category,
+          amount,
+          title,
+          qty,
+          paymentMethod,
+          notes
+        };
+
+        appData.expenses.unshift(newExpense);
+        saveData();
+        renderAll();
+        showToast(`Expense of ${formatMoney(amount)} logged for ${category}!`, 'success');
+
+        // Reset form & set date
+        document.getElementById('expenseForm').reset();
+        setupDefaultDates();
+        syncEntryBatchDropdowns(batchId);
+      }
+
+      // Handle Income Form Submit
+      function handleIncomeSubmit(e) {
+        e.preventDefault();
+        const batchId = document.getElementById('incomeBatchId').value;
+        const date = document.getElementById('incomeDate').value;
+        const type = document.getElementById('incomeType').value;
+        const buyer = document.getElementById('incomeBuyer').value || 'Local Market';
+        const birdsCount = Number(document.getElementById('incomeBirdsCount').value) || 0;
+        const weightKg = Number(document.getElementById('incomeTotalWeight').value) || 0;
+        const pricePerKg = Number(document.getElementById('incomePricePerKg').value) || 0;
+        const totalAmount = Number(document.getElementById('incomeTotalAmount').value) || 0;
+        const paymentStatus = document.getElementById('incomePaymentStatus').value;
+        const notes = document.getElementById('incomeNotes').value;
+
+        if (totalAmount <= 0) {
+          showToast('Please enter a valid sale total amount.', 'error');
+          return;
+        }
+
+        const newIncome = {
+          id: 'I-' + Date.now(),
+          batchId,
+          date,
+          type,
+          buyer,
+          birdsCount,
+          weightKg,
+          pricePerKg,
+          totalAmount,
+          paymentStatus,
+          notes
+        };
+
+        appData.incomes.unshift(newIncome);
+        saveData();
+        renderAll();
+        showToast(`Sales Income of ${formatMoney(totalAmount)} recorded successfully!`, 'success');
+
+        document.getElementById('incomeForm').reset();
+        setupDefaultDates();
+        syncEntryBatchDropdowns(batchId);
+      }
+
+      // Handle Mortality Submit
+      function handleMortalitySubmit(e) {
+        e.preventDefault();
+        const batchId = document.getElementById('mortalityBatchId').value;
+        const date = document.getElementById('mortalityDate').value;
+        const count = Number(document.getElementById('mortalityCount').value) || 0;
+        const cause = document.getElementById('mortalityCause').value;
+        const notes = document.getElementById('mortalityNotes').value;
+
+        if (count <= 0) {
+          showToast('Please enter a valid dead birds count.', 'error');
+          return;
+        }
+
+        const newMortality = {
+          id: 'M-' + Date.now(),
+          batchId,
+          date,
+          count,
+          cause,
+          notes
+        };
+
+        appData.mortalities.unshift(newMortality);
+        saveData();
+        renderAll();
+        showToast(`${count} dead birds recorded in flock mortality log.`, 'info');
+
+        document.getElementById('mortalityForm').reset();
+        setupDefaultDates();
+        syncEntryBatchDropdowns(batchId);
+      }
+
+      // Handle New Batch Form Submit
+      function handleNewBatchSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('newBatchName').value.trim();
+        const breed = document.getElementById('newBatchBreed').value;
+        const startDate = document.getElementById('newBatchStartDate').value;
+        const durationDays = Number(document.getElementById('newBatchDuration').value) || 35;
+        const initialBirds = Number(document.getElementById('newBatchBirdCount').value) || 1000;
+        const chickRate = Number(document.getElementById('newBatchChickRate').value) || 0;
+        const supplier = document.getElementById('newBatchSupplier').value || 'Hatchery';
+        const autoBook = document.getElementById('newBatchAutoBookChicks').checked;
+        const setActive = document.getElementById('newBatchSetAsActive').checked;
+
+        const newId = 'B-' + (appData.batches.length + 12);
+
+        // Calculate estimated end date
+        const startObj = new Date(startDate);
+        const endObj = new Date(startObj);
+        endObj.setDate(startObj.getDate() + durationDays);
+        const endDate = endObj.toISOString().split('T')[0];
+
+        const newBatch = {
+          id: newId,
+          name,
+          breed,
+          startDate,
+          endDate,
+          durationDays,
+          initialBirds,
+          chickRate,
+          supplier,
+          status: 'Active',
+          totalFeedKg: 0,
+          totalSoldWeightKg: 0,
+          notes: 'Started on ' + startDate
+        };
+
+        // If setActive is checked, set this as current active
+        if (setActive) {
+          appData.activeBatchId = newId;
+        }
+
+        appData.batches.unshift(newBatch);
+
+        // Auto book chick expense if requested and rate provided
+        if (autoBook && chickRate > 0) {
+          const chickExpenseAmount = initialBirds * chickRate;
+          appData.expenses.unshift({
+            id: 'E-' + Date.now(),
+            batchId: newId,
+            date: startDate,
+            category: 'Chicks',
+            title: `Day-Old Chicks (${initialBirds.toLocaleString()} ${breed})`,
+            qty: `${initialBirds} Chicks @ ${currentCurrency} ${chickRate}`,
+            amount: chickExpenseAmount,
+            paymentMethod: 'Bank Transfer',
+            notes: `Auto-booked initial chicks from ${supplier}`
+          });
+        }
+
+        saveData();
+        closeModal('newBatchModal');
+        document.getElementById('newBatchForm').reset();
+        setupDefaultDates();
+        renderAll();
+        showToast(`New Batch "${name}" created successfully!`, 'success');
+        switchTab('runningBatchTab');
+      }
+
+      // Close / Complete Batch Modal & Action
+      function openCompleteBatchModal() {
+        const batch = getActiveBatch();
+        if (!batch) return;
+
+        const batchExpenses = appData.expenses.filter(e => e.batchId === batch.id);
+        const batchIncomes = appData.incomes.filter(i => i.batchId === batch.id);
+
+        const totalExpense = batchExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+        const totalIncome = batchIncomes.reduce((sum, i) => sum + (Number(i.totalAmount) || 0), 0);
+        const net = totalIncome - totalExpense;
+
+        document.getElementById('closeModalBatchName').textContent = batch.name;
+        document.getElementById('closeModalIncome').textContent = formatMoney(totalIncome);
+        document.getElementById('closeModalExpense').textContent = formatMoney(totalExpense);
+        document.getElementById('closeModalNetProfit').textContent = formatMoney(net);
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('completeBatchEndDate').value = today;
+
+        openModal('completeBatchModal');
+      }
+
+      function confirmBatchCompletion() {
+        const batch = getActiveBatch();
+        if (!batch) return;
+
+        const closeDate = document.getElementById('completeBatchEndDate').value || new Date().toISOString().split('T')[0];
+        batch.status = 'Completed';
+        batch.endDate = closeDate;
+
+        // Calculate duration days
+        const start = new Date(batch.startDate);
+        const end = new Date(closeDate);
+        const diff = Math.max(1, Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)));
+        batch.durationDays = diff;
+
+        // Check if there is another active batch, else none
+        const nextActive = appData.batches.find(b => b.status === 'Active' && b.id !== batch.id);
+        if (nextActive) {
+          appData.activeBatchId = nextActive.id;
+        }
+
+        saveData();
+        closeModal('completeBatchModal');
+        renderAll();
+        showToast(`Batch "${batch.name}" marked as Completed and Archived!`, 'success');
+        switchTab('allBatchesTab');
+      }
+
+      /**
+       * Transaction History Table Renderer & Delete
+       */
+      function renderTransactionHistoryTable() {
+        const tbody = document.getElementById('transactionHistoryTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const search = (document.getElementById('historySearch')?.value || '').toLowerCase();
+        const typeFilter = document.getElementById('historyFilterType')?.value || 'All';
+        const batchFilter = document.getElementById('historyFilterBatch')?.value || 'All';
+        const catFilter = document.getElementById('historyFilterCategory')?.value || 'All';
+
+        // Combine logs
+        let records = [
+          ...appData.expenses.map(e => ({ ...e, txnType: 'Expense', timestamp: new Date(e.date).getTime() })),
+          ...appData.incomes.map(i => ({ ...i, txnType: 'Income', timestamp: new Date(i.date).getTime() })),
+          ...appData.mortalities.map(m => ({ ...m, txnType: 'Mortality', timestamp: new Date(m.date).getTime() }))
+        ].sort((a, b) => b.timestamp - a.timestamp);
+
+        // Apply filters
+        records = records.filter(item => {
+          if (typeFilter !== 'All' && item.txnType !== typeFilter) return false;
+          if (batchFilter !== 'All' && item.batchId !== batchFilter) return false;
+          if (catFilter !== 'All') {
+            const cat = item.category || item.type || (item.txnType === 'Mortality' ? 'Mortality' : '');
+            if (!cat.toLowerCase().includes(catFilter.toLowerCase())) return false;
+          }
+          if (search) {
+            const matchStr = `${item.title || ''} ${item.buyer || ''} ${item.notes || ''} ${item.category || ''} ${item.cause || ''}`.toLowerCase();
+            if (!matchStr.includes(search)) return false;
+          }
+          return true;
+        });
+
+        // Summary counters
+        const totalInc = records.filter(r => r.txnType === 'Income').reduce((s, r) => s + (Number(r.totalAmount) || 0), 0);
+        const totalExp = records.filter(r => r.txnType === 'Expense').reduce((s, r) => s + (Number(r.amount) || 0), 0);
+        
+        document.getElementById('historyRecordCount').textContent = `Showing ${records.length} records`;
+        document.getElementById('historyTotalIncome').textContent = formatMoney(totalInc);
+        document.getElementById('historyTotalExpense').textContent = formatMoney(totalExp);
+
+        if (records.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="py-8 text-center text-slate-400">
+                <i class="fa-solid fa-inbox text-2xl mb-2 block"></i>
+                No matching transactions found. Try adjusting your filters.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        records.forEach(item => {
+          const batch = appData.batches.find(b => b.id === item.batchId);
+          const batchName = batch ? batch.name.split('-')[0].trim() : item.batchId;
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+
+          let typePill = '';
+          let cat = '';
+          let details = '';
+          let qty = '';
+          let amtDisplay = '';
+
+          if (item.txnType === 'Expense') {
+            typePill = '<span class="px-2 py-0.5 rounded font-bold text-[10px] bg-rose-100 text-rose-800">EXPENSE</span>';
+            cat = `<span class="font-semibold text-slate-800">${item.category}</span>`;
+            details = item.title || item.notes || '-';
+            qty = item.qty || '-';
+            amtDisplay = `<span class="font-bold text-rose-600">-${formatMoney(item.amount)}</span>`;
+          } else if (item.txnType === 'Income') {
+            typePill = '<span class="px-2 py-0.5 rounded font-bold text-[10px] bg-emerald-100 text-emerald-800">INCOME</span>';
+            cat = `<span class="font-semibold text-slate-800">${item.type}</span>`;
+            details = `${item.buyer || 'Direct Sale'} ${item.notes ? `(${item.notes})` : ''}`;
+            qty = `${item.weightKg ? item.weightKg + ' kg' : ''} ${item.birdsCount ? `(${item.birdsCount} birds)` : ''}`;
+            amtDisplay = `<span class="font-bold text-emerald-600">+${formatMoney(item.totalAmount)}</span>`;
+          } else {
+            typePill = '<span class="px-2 py-0.5 rounded font-bold text-[10px] bg-slate-200 text-slate-800">MORTALITY</span>';
+            cat = '<span class="font-semibold text-rose-700">Flock Loss</span>';
+            details = `${item.cause} ${item.notes ? `• ${item.notes}` : ''}`;
+            qty = `${item.count} Dead Birds`;
+            amtDisplay = '<span class="text-slate-400">-</span>';
+          }
+
+          tr.innerHTML = `
+            <td class="py-2.5 px-3 whitespace-nowrap text-slate-600">${item.date}</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">${batchName}</td>
+            <td class="py-2.5 px-3 whitespace-nowrap">${typePill}</td>
+            <td class="py-2.5 px-3 whitespace-nowrap">${cat}</td>
+            <td class="py-2.5 px-3 text-slate-600 max-w-xs truncate">${details}</td>
+            <td class="py-2.5 px-3 text-slate-500 whitespace-nowrap">${qty}</td>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">${amtDisplay}</td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">
+              <button onclick="deleteRecord('${item.txnType}', '${item.id}')" class="text-slate-400 hover:text-rose-600 p-1 rounded transition cursor-pointer" title="Delete Entry">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      function deleteRecord(txnType, id) {
+        if (!confirm('Are you sure you want to delete this record?')) return;
+
+        if (txnType === 'Expense') {
+          appData.expenses = appData.expenses.filter(e => e.id !== id);
+        } else if (txnType === 'Income') {
+          appData.incomes = appData.incomes.filter(i => i.id !== id);
+        } else if (txnType === 'Mortality') {
+          appData.mortalities = appData.mortalities.filter(m => m.id !== id);
+        }
+
+        saveData();
+        renderAll();
+        showToast('Record deleted successfully.', 'info');
+      }
+
+      /**
+       * ============================================================
+       * TAB 3: ALL BATCHES & COMPARISON ANALYTICS
+       * ============================================================
+       */
+      function renderAllBatchesAnalytics() {
+        const yearFilter = document.getElementById('analyticsYearFilter')?.value || 'All';
+        const statusFilter = document.getElementById('analyticsStatusFilter')?.value || 'All';
+
+        let batches = [...appData.batches];
+
+        if (statusFilter !== 'All') {
+          batches = batches.filter(b => b.status === statusFilter);
+        }
+
+        if (yearFilter !== 'All') {
+          batches = batches.filter(b => b.startDate.startsWith(yearFilter));
+        }
+
+        // Calculate KPI totals
+        let totalRevenue = 0;
+        let totalExpense = 0;
+        let completedNetProfit = 0;
+        let totalBirdsFarmed = 0;
+        let totalDead = 0;
+        let totalFeed = 0;
+        let totalSoldWeight = 0;
+
+        const batchStats = batches.map(batch => {
+          const bExpenses = appData.expenses.filter(e => e.batchId === batch.id);
+          const bIncomes = appData.incomes.filter(i => i.batchId === batch.id);
+          const bMortalities = appData.mortalities.filter(m => m.batchId === batch.id);
+
+          const exp = bExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          const inc = bIncomes.reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+          const net = inc - exp;
+          const dead = bMortalities.reduce((s, m) => s + (Number(m.count) || 0), 0);
+          const soldWeight = bIncomes.reduce((s, i) => s + (Number(i.weightKg) || 0), 0) || (batch.totalSoldWeightKg || 0);
+          
+          // Feed computation
+          const feedExp = bExpenses.filter(e => e.category === 'Feed').reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          const feedKg = (feedExp > 0 ? (feedExp / 42) : 0) || (batch.totalFeedKg || 0);
+
+          const initialBirds = batch.initialBirds || 1;
+          const mortalityPct = ((dead / initialBirds) * 100).toFixed(2);
+          const fcr = soldWeight > 0 ? (feedKg / soldWeight).toFixed(2) : '1.45';
+          const roi = exp > 0 ? ((net / exp) * 100).toFixed(1) : 0;
+          const profitPerBird = initialBirds > 0 ? (net / initialBirds).toFixed(1) : 0;
+
+          totalRevenue += inc;
+          totalExpense += exp;
+          if (batch.status === 'Completed') {
+            completedNetProfit += net;
+          }
+          totalBirdsFarmed += initialBirds;
+          totalDead += dead;
+          totalFeed += feedKg;
+          totalSoldWeight += soldWeight;
+
+          return {
+            ...batch,
+            exp,
+            inc,
+            net,
+            dead,
+            mortalityPct,
+            feedKg,
+            soldWeight,
+            fcr,
+            roi,
+            profitPerBird
+          };
+        });
+
+        // Update Aggregate KPIs
+        document.getElementById('yearlyTotalBatches').textContent = `${batches.length} Batches`;
+        const activeCount = batches.filter(b => b.status === 'Active').length;
+        const closedCount = batches.filter(b => b.status === 'Completed').length;
+        document.getElementById('yearlyBatchesSplit').textContent = `${closedCount} Closed • ${activeCount} Active`;
+
+        document.getElementById('yearlyTotalRevenue').textContent = formatMoney(totalRevenue);
+        document.getElementById('yearlyTotalExpense').textContent = formatMoney(totalExpense);
+        
+        const netProfitEl = document.getElementById('yearlyNetProfit');
+        if (completedNetProfit >= 0) {
+          netProfitEl.textContent = `+${formatMoney(completedNetProfit)}`;
+          netProfitEl.className = 'text-lg font-bold font-display text-emerald-700 mt-0.5';
+        } else {
+          netProfitEl.textContent = formatMoney(completedNetProfit);
+          netProfitEl.className = 'text-lg font-bold font-display text-rose-700 mt-0.5';
+        }
+
+        document.getElementById('yearlyTotalBirds').textContent = `${totalBirdsFarmed.toLocaleString()} Birds`;
+        const avgMortality = totalBirdsFarmed > 0 ? ((totalDead / totalBirdsFarmed) * 100).toFixed(2) : '0.00';
+        document.getElementById('yearlyMortalityAvg').textContent = `Avg Mortality: ${avgMortality}%`;
+
+        const overallFCR = totalSoldWeight > 0 ? (totalFeed / totalSoldWeight).toFixed(2) : '1.43';
+        document.getElementById('yearlyAvgFCR').textContent = overallFCR;
+
+        // Render Master Table
+        renderAllBatchesMasterTable(batchStats);
+
+        // Render Comparison Charts
+        renderMultiBatchCharts(batchStats);
+      }
+
+      function renderAllBatchesMasterTable(batchStats) {
+        const tbody = document.getElementById('allBatchesTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (batchStats.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="11" class="py-8 text-center text-slate-400">No batches match the selected filters.</td></tr>`;
+          return;
+        }
+
+        batchStats.forEach(b => {
+          const tr = document.createElement('tr');
+          tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+
+          const statusBadge = b.status === 'Active' 
+            ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>ACTIVE</span>'
+            : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">COMPLETED</span>';
+
+          const netBadge = b.net >= 0
+            ? `<span class="font-extrabold text-emerald-700">+${formatMoney(b.net)}</span>`
+            : `<span class="font-extrabold text-rose-600">${formatMoney(b.net)}</span>`;
+
+          tr.innerHTML = `
+            <td class="py-3 px-3 font-bold text-slate-900 whitespace-nowrap">
+              ${b.name.split('-')[0].trim()}
+              <div class="text-[10px] text-slate-400 font-normal truncate max-w-[140px]">${b.supplier || ''}</div>
+            </td>
+            <td class="py-3 px-3 text-slate-600 whitespace-nowrap">${b.breed || 'Broiler'}</td>
+            <td class="py-3 px-3 text-slate-500 whitespace-nowrap">
+              ${b.startDate} → ${b.endDate || 'Running'}
+              <div class="text-[10px] text-slate-400 font-medium">${b.durationDays} Days</div>
+            </td>
+            <td class="py-3 px-3 font-semibold text-slate-800 whitespace-nowrap">${(b.initialBirds || 0).toLocaleString()}</td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span class="font-bold ${Number(b.mortalityPct) <= 3.5 ? 'text-emerald-700' : 'text-amber-700'}">${b.mortalityPct}%</span>
+              <div class="text-[10px] text-slate-400">(${b.dead} dead)</div>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span class="font-bold text-slate-800">FCR: ${b.fcr}</span>
+              <div class="text-[10px] text-slate-400">${Math.round(b.feedKg).toLocaleString()} kg feed</div>
+            </td>
+            <td class="py-3 px-3 font-bold text-rose-600 whitespace-nowrap">${formatMoney(b.exp)}</td>
+            <td class="py-3 px-3 font-bold text-emerald-600 whitespace-nowrap">${formatMoney(b.inc)}</td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              ${netBadge}
+              <div class="text-[10px] text-slate-500">ROI: ${b.roi}%</div>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">${statusBadge}</td>
+            <td class="py-3 px-3 text-center whitespace-nowrap">
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="viewBatchReport('${b.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2 py-1 rounded text-[11px] transition cursor-pointer" title="View Full Report">
+                  <i class="fa-solid fa-file-lines text-emerald-600"></i> Audit
+                </button>
+                <button onclick="exportSingleBatchCSV('${b.id}')" class="text-slate-400 hover:text-emerald-600 p-1 rounded transition cursor-pointer" title="Export CSV">
+                  <i class="fa-solid fa-file-csv"></i>
+                </button>
+                ${b.status !== 'Active' ? `
+                  <button onclick="setActiveBatchDirectly('${b.id}')" class="text-slate-400 hover:text-blue-600 p-1 rounded transition cursor-pointer" title="Reopen as Active">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      }
+
+      function setActiveBatchDirectly(batchId) {
+        appData.activeBatchId = batchId;
+        const b = appData.batches.find(item => item.id === batchId);
+        if (b) b.status = 'Active';
+        saveData();
+        renderAll();
+        showToast(`Switched active focus to "${b ? b.name : batchId}"`, 'success');
+        switchTab('runningBatchTab');
+      }
+
+      function renderMultiBatchCharts(batchStats) {
+        const labels = batchStats.map(b => b.name.split('-')[0].trim());
+        const incomeData = batchStats.map(b => b.inc);
+        const expenseData = batchStats.map(b => b.exp);
+        const profitData = batchStats.map(b => b.net);
+
+        // Chart 1: Profit & Income vs Expense
+        const chart1Canvas = document.getElementById('multiBatchProfitChart');
+        if (chart1Canvas) {
+          if (multiBatchProfitChartInstance) multiBatchProfitChartInstance.destroy();
+          const ctx1 = chart1Canvas.getContext('2d');
+          multiBatchProfitChartInstance = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: 'Sales Revenue',
+                  data: incomeData,
+                  backgroundColor: '#10b981',
+                  borderRadius: 6
+                },
+                {
+                  label: 'Total Expenses',
+                  data: expenseData,
+                  backgroundColor: '#f43f5e',
+                  borderRadius: 6
+                },
+                {
+                  label: 'Net Margin',
+                  data: profitData,
+                  backgroundColor: '#f59e0b',
+                  borderRadius: 6
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                tooltip: {
+                  callbacks: {
+                    label: (c) => ` ${c.dataset.label}: ${currentCurrency} ${c.raw.toLocaleString()}`
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: { font: { size: 10 } }
+                },
+                x: {
+                  ticks: { font: { size: 10 } }
+                }
+              }
+            }
+          });
+        }
+
+        // Chart 2: Sector-Wise Comparison (Chicks vs Feed vs Meds vs Overhead across batches)
+        const chart2Canvas = document.getElementById('multiBatchSectorChart');
+        if (chart2Canvas) {
+          if (multiBatchSectorChartInstance) multiBatchSectorChartInstance.destroy();
+
+          const chicksCost = batchStats.map(b => {
+            return appData.expenses.filter(e => e.batchId === b.id && e.category === 'Chicks')
+              .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          });
+          const feedCost = batchStats.map(b => {
+            return appData.expenses.filter(e => e.batchId === b.id && e.category === 'Feed')
+              .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          });
+          const medCost = batchStats.map(b => {
+            return appData.expenses.filter(e => e.batchId === b.id && (e.category === 'Medicine' || e.category === 'Vaccine'))
+              .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          });
+          const overheadCost = batchStats.map(b => {
+            return appData.expenses.filter(e => e.batchId === b.id && !['Chicks', 'Feed', 'Medicine', 'Vaccine'].includes(e.category))
+              .reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          });
+
+          const ctx2 = chart2Canvas.getContext('2d');
+          multiBatchSectorChartInstance = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [
+                { label: 'Feed Cost', data: feedCost, backgroundColor: '#10b981', stack: 'Stack 0' },
+                { label: 'Chicks Cost', data: chicksCost, backgroundColor: '#f59e0b', stack: 'Stack 0' },
+                { label: 'Medicine & Vaccines', data: medCost, backgroundColor: '#8b5cf6', stack: 'Stack 0' },
+                { label: 'Labor & Overheads', data: overheadCost, backgroundColor: '#06b6d4', stack: 'Stack 0' }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                tooltip: {
+                  callbacks: {
+                    label: (c) => ` ${c.dataset.label}: ${currentCurrency} ${c.raw.toLocaleString()}`
+                  }
+                }
+              },
+              scales: {
+                y: {
+                  stacked: true,
+                  beginAtZero: true,
+                  ticks: { font: { size: 10 } }
+                },
+                x: {
+                  stacked: true,
+                  ticks: { font: { size: 10 } }
+                }
+              }
+            }
+          });
+        }
+      }
+
+      /**
+       * ============================================================
+       * BATCH AUDIT REPORT VIEW & PRINT
+       * ============================================================
+       */
+      function viewBatchReport(batchId) {
+        const batch = appData.batches.find(b => b.id === batchId);
+        if (!batch) return;
+
+        const bExpenses = appData.expenses.filter(e => e.batchId === batch.id);
+        const bIncomes = appData.incomes.filter(i => i.batchId === batch.id);
+        const bMortalities = appData.mortalities.filter(m => m.batchId === batch.id);
+
+        const totalExpense = bExpenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+        const totalIncome = bIncomes.reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+        const netProfit = totalIncome - totalExpense;
+        const totalDead = bMortalities.reduce((s, m) => s + (Number(m.count) || 0), 0);
+        const initialBirds = batch.initialBirds || 1;
+        const mortalityRate = ((totalDead / initialBirds) * 100).toFixed(2);
+        const totalSoldKg = bIncomes.reduce((s, i) => s + (Number(i.weightKg) || 0), 0);
+        const totalSoldBirds = bIncomes.reduce((s, i) => s + (Number(i.birdsCount) || 0), 0);
+
+        const feedExp = bExpenses.filter(e => e.category === 'Feed').reduce((s, e) => s + (Number(e.amount) || 0), 0);
+        const feedKg = (feedExp > 0 ? (feedExp / 42) : 0) || (batch.totalFeedKg || 5000);
+        const fcr = totalSoldKg > 0 ? (feedKg / totalSoldKg).toFixed(2) : '1.42';
+        const costPerKg = totalSoldKg > 0 ? (totalExpense / totalSoldKg).toFixed(2) : '0.00';
+        const avgBirdWeight = totalSoldBirds > 0 ? (totalSoldKg / totalSoldBirds).toFixed(2) : '2.10';
+
+        document.getElementById('reportModalTitle').textContent = `${batch.name} - Audit Report`;
+        document.getElementById('reportModalSubtitle').textContent = `Farmed from ${batch.startDate} to ${batch.endDate || 'Active'}`;
+
+        const reportArea = document.getElementById('batchReportPrintArea');
+        reportArea.innerHTML = `
+          <!-- Print Header -->
+          <div class="border-b-2 border-slate-900 pb-4 flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-extrabold text-slate-900 font-display">YEASIN POULTRY FARM</h1>
+              <p class="text-xs text-slate-600">Batch Final Production & Financial Balance Sheet</p>
+            </div>
+            <div class="text-right text-xs text-slate-500">
+              <p>Generated: ${new Date().toLocaleDateString()}</p>
+              <p class="font-bold text-slate-800">Status: ${batch.status.toUpperCase()}</p>
+            </div>
+          </div>
+
+          <!-- Batch Specs Matrix -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs">
+            <div>
+              <span class="text-slate-400 uppercase font-semibold text-[10px]">Batch Name</span>
+              <p class="font-bold text-slate-900 mt-0.5">${batch.name}</p>
+            </div>
+            <div>
+              <span class="text-slate-400 uppercase font-semibold text-[10px]">Flock Breed</span>
+              <p class="font-bold text-slate-900 mt-0.5">${batch.breed}</p>
+            </div>
+            <div>
+              <span class="text-slate-400 uppercase font-semibold text-[10px]">Rearing Period</span>
+              <p class="font-bold text-slate-900 mt-0.5">${batch.startDate} to ${batch.endDate} (${batch.durationDays} Days)</p>
+            </div>
+            <div>
+              <span class="text-slate-400 uppercase font-semibold text-[10px]">Hatchery Supplier</span>
+              <p class="font-bold text-slate-900 mt-0.5">${batch.supplier || 'Standard'}</p>
+            </div>
+          </div>
+
+          <!-- Production Efficiency Card -->
+          <div class="border border-emerald-200 bg-emerald-50/40 rounded-xl p-4">
+            <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider mb-3">Biological & Production Performance</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div>
+                <span class="text-slate-500">Initial Flock Placed:</span>
+                <p class="font-extrabold text-slate-900 text-base">${initialBirds.toLocaleString()} Birds</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Total Mortality:</span>
+                <p class="font-extrabold text-rose-600 text-base">${totalDead.toLocaleString()} (${mortalityRate}%)</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Total Harvest Biomass:</span>
+                <p class="font-extrabold text-slate-900 text-base">${totalSoldKg.toLocaleString()} KG</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Commercial FCR:</span>
+                <p class="font-extrabold text-emerald-700 text-base">${fcr}</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Avg Harvest Weight:</span>
+                <p class="font-bold text-slate-800">${avgBirdWeight} KG / Bird</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Total Feed Consumed:</span>
+                <p class="font-bold text-slate-800">${Math.round(feedKg).toLocaleString()} KG</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Cost of Production:</span>
+                <p class="font-bold text-blue-700">${currentCurrency} ${costPerKg} / KG</p>
+              </div>
+              <div>
+                <span class="text-slate-500">Flock Livability:</span>
+                <p class="font-bold text-emerald-700">${(100 - Number(mortalityRate)).toFixed(2)}%</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Statement: Income & Expense -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <!-- Expenses List -->
+            <div class="border border-slate-200 rounded-xl p-4">
+              <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>Expenditures by Sector</span>
+                <span class="text-rose-600">${formatMoney(totalExpense)}</span>
+              </h4>
+              <div class="divide-y divide-slate-100 text-xs">
+                ${bExpenses.map(e => `
+                  <div class="py-1.5 flex justify-between">
+                    <div>
+                      <span class="font-semibold text-slate-700">${e.category}</span>
+                      <p class="text-[10px] text-slate-400 truncate max-w-[170px]">${e.title}</p>
+                    </div>
+                    <span class="font-bold text-slate-800">${formatMoney(e.amount)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Incomes List -->
+            <div class="border border-slate-200 rounded-xl p-4">
+              <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center justify-between">
+                <span>Revenue Breakdown</span>
+                <span class="text-emerald-600">${formatMoney(totalIncome)}</span>
+              </h4>
+              <div class="divide-y divide-slate-100 text-xs">
+                ${bIncomes.map(i => `
+                  <div class="py-1.5 flex justify-between">
+                    <div>
+                      <span class="font-semibold text-slate-700">${i.type}</span>
+                      <p class="text-[10px] text-slate-400">${i.buyer || ''} ${i.weightKg ? `(${i.weightKg} kg)` : ''}</p>
+                    </div>
+                    <span class="font-bold text-emerald-700">${formatMoney(i.totalAmount)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Net Statement -->
+          <div class="bg-slate-900 text-white rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p class="text-xs text-slate-400 uppercase font-semibold">Net Profit / Loss Statement</p>
+              <h3 class="text-2xl font-extrabold font-display ${netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                ${netProfit >= 0 ? '+' : ''}${formatMoney(netProfit)}
+              </h3>
+            </div>
+            <div class="text-right text-xs text-slate-300 space-y-1">
+              <p>Profit per Initial Bird: <strong class="text-white">${currentCurrency} ${(netProfit / initialBirds).toFixed(2)}</strong></p>
+              <p>Return on Investment (ROI): <strong class="text-white">${totalExpense > 0 ? ((netProfit / totalExpense) * 100).toFixed(1) : 0}%</strong></p>
+            </div>
+          </div>
+        `;
+
+        openModal('batchDetailModal');
+      }
+
+      function printBatchReport() {
+        window.print();
+      }
+
+      /**
+       * ============================================================
+       * TAB 4: POULTRY TOOLS CALCULATORS
+       * ============================================================
+       */
+      function calculateFCRTool() {
+        const feedKg = Number(document.getElementById('fcrToolFeedKg')?.value) || 0;
+        const weightKg = Number(document.getElementById('fcrToolWeightKg')?.value) || 0;
+        const birdsSold = Number(document.getElementById('fcrToolBirdsSold')?.value) || 0;
+
+        const resultEl = document.getElementById('fcrToolResult');
+        const badgeEl = document.getElementById('fcrToolRatingBadge');
+        const avgWeightEl = document.getElementById('fcrToolAvgWeight');
+        const feedPerBirdEl = document.getElementById('fcrToolFeedPerBird');
+
+        if (!resultEl) return;
+
+        if (feedKg > 0 && weightKg > 0) {
+          const fcr = (feedKg / weightKg).toFixed(2);
+          resultEl.textContent = fcr;
+
+          const numFCR = Number(fcr);
+          if (numFCR < 1.45) {
+            badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+            badgeEl.innerHTML = '<i class="fa-solid fa-star text-amber-500"></i> Excellent Performance (&lt; 1.45)';
+          } else if (numFCR <= 1.65) {
+            badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300';
+            badgeEl.innerHTML = '<i class="fa-solid fa-check text-blue-600"></i> Good Commercial Standard (1.45 - 1.65)';
+          } else if (numFCR <= 1.85) {
+            badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300';
+            badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Fair / Average (1.65 - 1.85)';
+          } else {
+            badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
+            badgeEl.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-600"></i> High FCR / Review Feed Quality';
+          }
+        } else {
+          resultEl.textContent = '0.00';
+        }
+
+        if (birdsSold > 0 && weightKg > 0) {
+          avgWeightEl.textContent = `${(weightKg / birdsSold).toFixed(2)} kg`;
+        }
+        if (birdsSold > 0 && feedKg > 0) {
+          feedPerBirdEl.textContent = `${(feedKg / birdsSold).toFixed(2)} kg`;
+        }
+      }
+
+      function fcrConvertBagsToKg() {
+        const bags = prompt('Enter number of 50-kg feed bags consumed:');
+        if (bags && !isNaN(bags)) {
+          const kg = Number(bags) * 50;
+          document.getElementById('fcrToolFeedKg').value = kg;
+          calculateFCRTool();
+        }
+      }
+
+      function calculateMortalityTool() {
+        const initial = Number(document.getElementById('mortToolInitialChicks')?.value) || 0;
+        const dead = Number(document.getElementById('mortToolDeadCount')?.value) || 0;
+        const chickCost = Number(document.getElementById('mortToolChickCost')?.value) || 0;
+
+        const mortEl = document.getElementById('mortToolMortalityRate');
+        const liveEl = document.getElementById('mortToolLivabilityRate');
+        const badgeEl = document.getElementById('mortToolStatusBadge');
+        const capLossEl = document.getElementById('mortToolCapitalLoss');
+
+        if (!mortEl || initial <= 0) return;
+
+        const mortPct = ((dead / initial) * 100).toFixed(2);
+        const livePct = (100 - Number(mortPct)).toFixed(2);
+
+        mortEl.textContent = `${mortPct}%`;
+        liveEl.textContent = `${livePct}%`;
+        capLossEl.textContent = formatMoney(dead * chickCost);
+
+        if (Number(mortPct) <= 3.5) {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> Normal Commercial Range (&lt; 3.5%)';
+        } else if (Number(mortPct) <= 5.0) {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Moderate Loss (3.5% - 5.0%)';
+        } else {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-skull"></i> High Mortality Alert (&gt; 5.0%)';
+        }
+      }
+
+      function calculateCOPTool() {
+        const totalExp = Number(document.getElementById('copTotalExpense')?.value) || 0;
+        const totalKg = Number(document.getElementById('copTotalKg')?.value) || 0;
+        const sellingRate = Number(document.getElementById('copSellingRate')?.value) || 0;
+
+        const resultEl = document.getElementById('copResultPerKg');
+        const marginEl = document.getElementById('copProfitMarginPerKg');
+        const projEl = document.getElementById('copProjectedTotalProfit');
+
+        if (!resultEl || totalKg <= 0) return;
+
+        const cop = (totalExp / totalKg).toFixed(2);
+        resultEl.textContent = `${currentCurrency} ${cop} / kg`;
+
+        const margin = (sellingRate - Number(cop)).toFixed(2);
+        const marginPct = sellingRate > 0 ? ((Number(margin) / sellingRate) * 100).toFixed(1) : 0;
+
+        if (Number(margin) >= 0) {
+          marginEl.textContent = `+${currentCurrency} ${margin} / kg (${marginPct}%)`;
+          marginEl.className = 'text-emerald-700 font-bold';
+        } else {
+          marginEl.textContent = `${currentCurrency} ${margin} / kg (${marginPct}%)`;
+          marginEl.className = 'text-rose-600 font-bold';
+        }
+
+        const projected = (totalKg * sellingRate) - totalExp;
+        projEl.textContent = `${projected >= 0 ? '+' : ''}${formatMoney(projected)}`;
+      }
+
+      function calculateEPEFTool() {
+        const livability = Number(document.getElementById('epefLivability')?.value) || 0;
+        const weight = Number(document.getElementById('epefWeight')?.value) || 0;
+        const age = Number(document.getElementById('epefAge')?.value) || 0;
+        const fcr = Number(document.getElementById('epefFCR')?.value) || 0;
+
+        const scoreEl = document.getElementById('epefScoreResult');
+        const badgeEl = document.getElementById('epefRatingBadge');
+
+        if (!scoreEl || age <= 0 || fcr <= 0) return;
+
+        // Formula: (Livability % * Weight kg) / (Age * FCR) * 100
+        const epef = Math.round((livability * weight) / (age * fcr) * 100);
+        scoreEl.textContent = epef;
+
+        if (epef >= 350) {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-crown text-amber-500"></i> World Class Flock (&gt; 350)';
+        } else if (epef >= 300) {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-thumbs-up text-blue-600"></i> Good Commercial Result (300 - 350)';
+        } else if (epef >= 250) {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-check text-amber-600"></i> Fair / Acceptable (250 - 300)';
+        } else {
+          badgeEl.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300';
+          badgeEl.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-600"></i> Below Potential (&lt; 250)';
+        }
+      }
+
+      /**
+       * ============================================================
+       * CSV EXPORT & BACKUP / RESTORE
+       * ============================================================
+       */
+      function exportSummaryCSV() {
+        let csv = 'Batch ID,Batch Name,Breed,Start Date,End Date,Duration (Days),Initial Birds,Mortality Count,Mortality %,Total Expense (' + currentCurrency + '),Total Income (' + currentCurrency + '),Net Profit (' + currentCurrency + '),Status\n';
+
+        appData.batches.forEach(b => {
+          const bExp = appData.expenses.filter(e => e.batchId === b.id).reduce((s, e) => s + (Number(e.amount) || 0), 0);
+          const bInc = appData.incomes.filter(i => i.batchId === b.id).reduce((s, i) => s + (Number(i.totalAmount) || 0), 0);
+          const bDead = appData.mortalities.filter(m => m.batchId === b.id).reduce((s, m) => s + (Number(m.count) || 0), 0);
+          const mortPct = b.initialBirds ? ((bDead / b.initialBirds) * 100).toFixed(2) : 0;
+          const net = bInc - bExp;
+
+          csv += `"${b.id}","${b.name}","${b.breed}","${b.startDate}","${b.endDate || ''}",${b.durationDays},${b.initialBirds},${bDead},${mortPct}%,${bExp},${bInc},${net},"${b.status}"\n`;
+        });
+
+        downloadCSV(csv, `Yeasin_Poultry_Batches_Summary_${new Date().toISOString().split('T')[0]}.csv`);
+        showToast('Batches summary exported to CSV', 'success');
+      }
+
+      function exportTransactionsCSV() {
+        let csv = 'Date,Batch ID,Type,Sector/Category,Title/Buyer,Quantity/Weight,Amount (' + currentCurrency + '),Payment/Status,Notes\n';
+
+        appData.expenses.forEach(e => {
+          csv += `"${e.date}","${e.batchId}","Expense","${e.category}","${e.title || ''}","${e.qty || ''}",-${e.amount},"${e.paymentMethod || ''}","${e.notes || ''}"\n`;
+        });
+
+        appData.incomes.forEach(i => {
+          csv += `"${i.date}","${i.batchId}","Income","${i.type}","${i.buyer || ''}","${i.weightKg ? i.weightKg + ' kg' : ''} ${i.birdsCount ? '(' + i.birdsCount + ' birds)' : ''}",+${i.totalAmount},"${i.paymentStatus || ''}","${i.notes || ''}"\n`;
+        });
+
+        appData.mortalities.forEach(m => {
+          csv += `"${m.date}","${m.batchId}","Mortality","Dead Birds","${m.cause || ''}","${m.count} birds",0,"","${m.notes || ''}"\n`;
+        });
+
+        downloadCSV(csv, `Yeasin_Poultry_All_Transactions_${new Date().toISOString().split('T')[0]}.csv`);
+        showToast('Transactions history exported to CSV', 'success');
+      }
+
+      function exportSingleBatchCSV(batchId) {
+        const batch = appData.batches.find(b => b.id === batchId);
+        if (!batch) return;
+
+        let csv = `YEASIN POULTRY - BATCH AUDIT: ${batch.name}\n`;
+        csv += `Breed: ${batch.breed}, Start Date: ${batch.startDate}, Harvest Date: ${batch.endDate}, Birds: ${batch.initialBirds}\n\n`;
+
+        csv += 'Type,Date,Category/Product,Description/Buyer,Qty/Weight,Amount (' + currentCurrency + ')\n';
+
+        appData.expenses.filter(e => e.batchId === batchId).forEach(e => {
+          csv += `Expense,"${e.date}","${e.category}","${e.title || ''}","${e.qty || ''}",-${e.amount}\n`;
+        });
+
+        appData.incomes.filter(i => i.batchId === batchId).forEach(i => {
+          csv += `Income,"${i.date}","${i.type}","${i.buyer || ''}","${i.weightKg} kg",+${i.totalAmount}\n`;
+        });
+
+        appData.mortalities.filter(m => m.batchId === batchId).forEach(m => {
+          csv += `Mortality,"${m.date}","Flock Loss","${m.cause}","${m.count} dead",0\n`;
+        });
+
+        downloadCSV(csv, `Batch_${batchId}_Statement.csv`);
+        showToast(`Exported batch statement for ${batch.name}`, 'success');
+      }
+
+      function downloadCSV(csvContent, filename) {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportJSONBackup() {
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(appData, null, 2));
+        const dlAnchor = document.createElement('a');
+        dlAnchor.setAttribute('href', dataStr);
+        dlAnchor.setAttribute('download', `yeasin_poultry_backup_${new Date().toISOString().split('T')[0]}.json`);
+        dlAnchor.click();
+        showToast('Complete Farm JSON backup downloaded!', 'success');
+      }
+
+      function importJSONBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const imported = JSON.parse(e.target.result);
+            if (imported.batches && imported.expenses) {
+              appData = imported;
+              saveData();
+              renderAll();
+              showToast('Backup restored successfully!', 'success');
+            } else {
+              showToast('Invalid backup file format.', 'error');
+            }
+          } catch (err) {
+            showToast('Error reading backup file.', 'error');
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      /**
+       * ============================================================
+       * MODAL & TOAST UTILITIES
+       * ============================================================
+       */
+      function openModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('hidden');
+      }
+
+      function closeModal(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      }
+
+      function toggleDataMenu() {
+        const menu = document.getElementById('dataDropdownMenu');
+        if (menu) menu.classList.toggle('hidden');
+      }
+
+      // Close dropdown when clicked outside
+      window.addEventListener('click', (e) => {
+        const btn = document.getElementById('dataMenuBtn');
+        const menu = document.getElementById('dataDropdownMenu');
+        if (menu && btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-xs font-semibold text-white transition-all transform duration-300 translate-y-2 opacity-0';
+
+        let icon = '<i class="fa-solid fa-circle-info"></i>';
+        if (type === 'success') {
+          toast.classList.add('bg-emerald-700', 'border', 'border-emerald-500');
+          icon = '<i class="fa-solid fa-circle-check text-emerald-300 text-sm"></i>';
+        } else if (type === 'error') {
+          toast.classList.add('bg-rose-700', 'border', 'border-rose-500');
+          icon = '<i class="fa-solid fa-triangle-exclamation text-rose-300 text-sm"></i>';
+        } else {
+          toast.classList.add('bg-slate-900', 'border', 'border-slate-700');
+          icon = '<i class="fa-solid fa-bell text-amberGold-400 text-sm"></i>';
+        }
+
+        toast.innerHTML = `
+          ${icon}
+          <span class="flex-1">${message}</span>
+          <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white p-0.5">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        `;
+
+        container.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+          toast.classList.remove('translate-y-2', 'opacity-0');
+        }, 10);
+
+        // Auto remove
+        setTimeout(() => {
+          toast.classList.add('opacity-0', 'translate-y-2');
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      }
+    </script>
+  </body>
+</html>
