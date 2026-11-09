@@ -161,7 +161,7 @@
             <!-- Owner Profile Button with Avatar & Facebook Link modal -->
             <button onclick="openOwnerProfileModal()" class="flex items-center gap-2 bg-slate-800/90 hover:bg-slate-700/90 border border-emerald-500/50 hover:border-amberGold-400 rounded-full pl-1.5 pr-2.5 sm:pr-3 py-1 text-xs text-white transition shadow-sm hover:ring-2 hover:ring-amber-400/50 cursor-pointer" title="খামার মালিকের প্রোফাইল (Owner Profile)">
               <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border border-amberGold-400 flex-shrink-0 bg-slate-800">
-                <img src="/abir.jpg" alt="মো: ইয়াসিন আবির" class="w-full h-full object-cover" onerror="this.src='/src/assets/images/owner_profile_1794209281285.jpg'" />
+                <img src="/assets/aistudio/abir_0d80e39e.jpg" alt="মো: ইয়াসিন আবির" class="ownerProfileImage w-full h-full object-cover" onerror="this.src='/abir.jpg'" />
               </div>
               <div class="hidden sm:flex flex-col text-left leading-tight">
                 <span class="font-bold text-slate-100 text-[11px] truncate max-w-[105px]">মো: ইয়াসিন আবির</span>
@@ -206,8 +206,11 @@
                   <input type="file" id="importJsonFileInput" accept=".json" class="hidden" onchange="importJSONBackup(event)" />
                 </label>
                 <div class="border-t border-slate-100 my-1"></div>
-                <button onclick="resetToDemoData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-700 flex items-center gap-2.5">
-                  <i class="fa-solid fa-rotate text-amber-600 text-sm"></i> ডেমো ডাটা রিলোড করুন
+                <button onclick="resetToFreshData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-rose-50 text-rose-700 font-bold flex items-center gap-2.5">
+                  <i class="fa-solid fa-broom text-rose-600 text-sm"></i> ফ্রেশ শুরু (সকল ডাটা মুছুন)
+                </button>
+                <button onclick="resetToDemoData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-700 flex items-center gap-2.5 text-[11px]">
+                  <i class="fa-solid fa-rotate text-amber-600 text-sm"></i> নমুনা ডেমো ডাটা দেখুন
                 </button>
               </div>
             </div>
@@ -1443,7 +1446,7 @@
         <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full overflow-hidden border border-emerald-500">
-              <img src="/abir.jpg" alt="মো: ইয়াসিন আবির" class="w-full h-full object-cover" onerror="this.src='/src/assets/images/owner_profile_1794209281285.jpg'" />
+              <img src="/assets/aistudio/abir_0d80e39e.jpg" alt="মো: ইয়াসিন আবির" class="ownerProfileImage w-full h-full object-cover" onerror="this.src='/abir.jpg'" />
             </div>
             <button onclick="openOwnerProfileModal()" class="font-bold text-slate-800 hover:text-emerald-700 transition cursor-pointer">
               স্বত্বাধিকারী: মো: ইয়াসিন আবির
@@ -1463,7 +1466,7 @@
           <span>•</span>
           <button onclick="exportJSONBackup()" class="hover:text-emerald-600 transition cursor-pointer">ব্যাকআপ ডাউনলোড</button>
           <span>•</span>
-          <button onclick="resetToDemoData()" class="hover:text-amber-600 transition cursor-pointer">ডেমো ডাটা রিলোড</button>
+          <button onclick="resetToFreshData()" class="text-rose-600 hover:text-rose-800 font-semibold transition cursor-pointer">ফ্রেশ ডাটা</button>
         </div>
       </div>
     </footer>
@@ -2133,20 +2136,37 @@
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
 
-        <div class="text-center pt-2 pb-4">
+        <div class="text-center pt-2 pb-2">
           <!-- Profile Image with Sunflower Ring / Glow -->
-          <div class="relative inline-block mx-auto mb-4">
+          <div class="relative inline-block mx-auto mb-3">
             <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-emerald-600 shadow-xl ring-4 ring-amber-400/50 mx-auto bg-slate-100">
-              <img id="ownerModalProfileImg" src="/abir.jpg" alt="মো: ইয়াসিন আবির" class="w-full h-full object-cover" onerror="this.src='/src/assets/images/owner_profile_1794209281285.jpg'" />
+              <img id="ownerModalProfileImg" src="/assets/aistudio/abir_0d80e39e.jpg" alt="মো: ইয়াসিন আবির" class="ownerProfileImage w-full h-full object-cover" onerror="this.src='/abir.jpg'" />
             </div>
             <div class="absolute bottom-1 right-2 bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="ভেরিফাইড খামার মালিক">
               <i class="fa-solid fa-check text-xs"></i>
             </div>
           </div>
 
+          <!-- Owner Photo Action Buttons (Camera / Gallery / Reset) -->
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 cursor-pointer transition shadow-xs">
+              <i class="fa-solid fa-camera text-emerald-600"></i>
+              <span>ক্যামেরা</span>
+              <input type="file" accept="image/*" capture="user" class="hidden" onchange="handleOwnerPhotoUpload(event)" />
+            </label>
+            <label class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 cursor-pointer transition shadow-xs">
+              <i class="fa-solid fa-image text-blue-600"></i>
+              <span>গ্যালারি</span>
+              <input type="file" accept="image/*" class="hidden" onchange="handleOwnerPhotoUpload(event)" />
+            </label>
+            <button type="button" onclick="resetOwnerPhotoToDefault()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-300 cursor-pointer transition shadow-xs" title="আসল ছবিতে ফিরুন">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+
           <h3 class="text-2xl font-black text-slate-900 font-display">মো: ইয়াসিন আবির</h3>
-          <p class="text-xs sm:text-sm font-semibold text-emerald-700 mt-1">স্বত্বাধিকারী ও প্রতিষ্ঠাতা • ইয়াসিন পোল্ট্রি ফার্ম</p>
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 mt-2.5 border border-amber-300/60">
+          <p class="text-xs sm:text-sm font-semibold text-emerald-700 mt-0.5">স্বত্বাধিকারী ও প্রতিষ্ঠাতা • ইয়াসিন পোল্ট্রি ফার্ম</p>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 mt-2 border border-amber-300/60">
             <i class="fa-solid fa-award text-amber-600"></i> বাণিজ্যিক ব্রয়লার ও পোল্ট্রি উদ্যোক্তা
           </div>
         </div>
@@ -2213,8 +2233,34 @@
        * Core Data Structure, LocalStorage Engine, Analytics, & Charts
        */
 
-      const STORAGE_KEY = 'yeasin_poultry_data_v3';
+      const DEFAULT_OWNER_PHOTO = '/assets/aistudio/abir_0d80e39e.jpg';
+      const STORAGE_KEY = 'yeasin_poultry_data_v4';
       let currentCurrency = '৳';
+
+      // Clean Fresh Starter Data for Real Farm Operations (Zero demo numbers)
+      const FRESH_INITIAL_DATA = {
+        activeBatchId: 'B-01',
+        currency: '৳',
+        ownerPhoto: DEFAULT_OWNER_PHOTO,
+        batches: [
+          {
+            id: 'B-01',
+            name: 'ব্যাচ #০১',
+            breed: 'কবল ৫০০ ব্রয়লার',
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: null,
+            durationDays: 35,
+            initialBirds: 0,
+            chickRate: 0,
+            supplier: '',
+            status: 'Active',
+            notes: 'নতুন চলমান ব্যাচ - এডিট করে তথ্য দিন'
+          }
+        ],
+        expenses: [],
+        incomes: [],
+        mortalities: []
+      };
 
       // Sample Voucher / Memo SVG (Lightweight vector data URI for instant demo preview)
       const SAMPLE_MEMO_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
@@ -2563,18 +2609,31 @@
       }
 
       function loadData() {
+        // Clear out old v3 demo data to ensure user starts completely fresh
+        if (localStorage.getItem('yeasin_poultry_data_v3')) {
+          localStorage.removeItem('yeasin_poultry_data_v3');
+        }
+
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           try {
             appData = JSON.parse(stored);
+            if (!appData.batches || appData.batches.length === 0) {
+              appData = JSON.parse(JSON.stringify(FRESH_INITIAL_DATA));
+              saveData();
+            }
           } catch (e) {
-            console.error('Error parsing stored data, using demo:', e);
-            appData = JSON.parse(JSON.stringify(DEMO_DATA));
+            console.error('Error parsing stored data, using fresh starter:', e);
+            appData = JSON.parse(JSON.stringify(FRESH_INITIAL_DATA));
             saveData();
           }
         } else {
-          appData = JSON.parse(JSON.stringify(DEMO_DATA));
+          appData = JSON.parse(JSON.stringify(FRESH_INITIAL_DATA));
           saveData();
+        }
+
+        if (!appData.ownerPhoto) {
+          appData.ownerPhoto = localStorage.getItem('yeasin_owner_photo') || DEFAULT_OWNER_PHOTO;
         }
 
         if (appData.currency) {
@@ -2601,13 +2660,60 @@
         }
       }
 
+      function resetToFreshData() {
+        if (!confirm('আপনি কি সকল ডাটা মুছে সম্পূর্ণ ফ্রেশ খামার খতিয়ান শুরু করতে চান?')) return;
+        localStorage.removeItem('yeasin_poultry_data_v3');
+        localStorage.removeItem(STORAGE_KEY);
+        appData = JSON.parse(JSON.stringify(FRESH_INITIAL_DATA));
+        appData.ownerPhoto = localStorage.getItem('yeasin_owner_photo') || DEFAULT_OWNER_PHOTO;
+        saveData();
+        renderAll();
+        applyOwnerPhoto();
+        showToast('সকল ডাটা মুছে ফ্রেশ ও শূন্য খতিয়ান প্রস্তুত করা হয়েছে! এখন আপনি নতুন হিসাব শুরু করতে পারেন।', 'success');
+      }
+
       function resetToDemoData() {
-        if (confirm('আপনি কি নিশ্চিত যে সমস্ত খামার ডাটা নমুনা ডেমো ডাটায় রিসেট করতে চান? আপনার বর্তমান সমস্ত তথ্য মুছে যাবে।')) {
-          appData = JSON.parse(JSON.stringify(DEMO_DATA));
+        if (!confirm('আপনি কি নমুনা ডেমো ডাটা দেখতে চান?')) return;
+        appData = JSON.parse(JSON.stringify(DEMO_DATA));
+        appData.ownerPhoto = localStorage.getItem('yeasin_owner_photo') || DEFAULT_OWNER_PHOTO;
+        saveData();
+        renderAll();
+        applyOwnerPhoto();
+        showToast('নমুনা ডেমো ডাটা সফলভাবে লোড হয়েছে!', 'info');
+      }
+
+      // Owner Photo Upload & Reset Handlers
+      async function handleOwnerPhotoUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        try {
+          showToast('ছবি প্রসেসিং হচ্ছে...', 'info');
+          const compressed = await compressImage(file, 800, 800, 0.85);
+          appData.ownerPhoto = compressed;
+          localStorage.setItem('yeasin_owner_photo', compressed);
           saveData();
-          renderAll();
-          showToast('নমুনা ডেমো ডাটা সফলভাবে লোড হয়েছে!', 'success');
+          applyOwnerPhoto(compressed);
+          showToast('মালিকের ছবি সফলভাবে আপডেট হয়েছে!', 'success');
+        } catch (err) {
+          console.error(err);
+          showToast('ছবি আপলোড করতে ত্রুটি হয়েছে।', 'error');
         }
+      }
+
+      function resetOwnerPhotoToDefault() {
+        if (!confirm('আপনি কি আসল ছবিতে ফিরে যেতে চান?')) return;
+        appData.ownerPhoto = DEFAULT_OWNER_PHOTO;
+        localStorage.removeItem('yeasin_owner_photo');
+        saveData();
+        applyOwnerPhoto(DEFAULT_OWNER_PHOTO);
+        showToast('আসল ছবি সেট করা হয়েছে!', 'info');
+      }
+
+      function applyOwnerPhoto(url) {
+        const photoUrl = url || appData?.ownerPhoto || localStorage.getItem('yeasin_owner_photo') || DEFAULT_OWNER_PHOTO;
+        document.querySelectorAll('.ownerProfileImage').forEach(img => {
+          img.src = photoUrl;
+        });
       }
 
       function setupDefaultDates() {
@@ -2650,6 +2756,7 @@
        * Global Render Controller
        */
       function renderAll() {
+        applyOwnerPhoto();
         updateCurrencyLabels();
         populateBatchSelectors();
         renderRunningBatchDashboard();
@@ -4086,6 +4193,12 @@
                 <button onclick="viewBatchReport('${b.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2 py-1 rounded text-[11px] transition cursor-pointer" title="পূর্ণাঙ্গ অডিট দেখুন">
                   <i class="fa-solid fa-file-lines text-emerald-600"></i> অডিট
                 </button>
+                <button onclick="openEditBatchModal('${b.id}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold px-2 py-1 rounded text-[11px] transition cursor-pointer" title="ব্যাচ তথ্য এডিট ও সংশোধন">
+                  <i class="fa-solid fa-pen-to-square"></i> এডিট
+                </button>
+                <button onclick="deleteBatch('${b.id}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-2 py-1 rounded text-[11px] transition cursor-pointer" title="ব্যাচ মুছে ফেলুন">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
                 <button onclick="exportSingleBatchCSV('${b.id}')" class="text-slate-400 hover:text-emerald-600 p-1 rounded transition cursor-pointer" title="CSV এক্সপোর্ট">
                   <i class="fa-solid fa-file-csv"></i>
                 </button>
@@ -4266,6 +4379,21 @@
 
         const reportArea = document.getElementById('batchReportPrintArea');
         reportArea.innerHTML = `
+          <!-- Quick Action Bar (No Print) -->
+          <div class="flex items-center justify-between no-print mb-4 pb-2.5 border-b border-slate-200">
+            <span class="text-xs text-slate-500 font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-emerald-600"></i> ব্যাচ ম্যানেজমেন্ট:
+            </span>
+            <div class="flex items-center gap-2">
+              <button onclick="closeModal('batchDetailModal'); openEditBatchModal('${batch.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition cursor-pointer flex items-center gap-1.5">
+                <i class="fa-solid fa-pen-to-square"></i> এই ব্যাচ এডিট করুন
+              </button>
+              <button onclick="closeModal('batchDetailModal'); deleteBatch('${batch.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer flex items-center gap-1.5">
+                <i class="fa-solid fa-trash-can"></i> ব্যাচ মুছুন
+              </button>
+            </div>
+          </div>
+
           <!-- Print Header -->
           <div class="border-b-2 border-slate-900 pb-4 flex items-center justify-between">
             <div>
