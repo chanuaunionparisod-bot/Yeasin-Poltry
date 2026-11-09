@@ -129,8 +129,8 @@
 
           <!-- Top Actions & Controls -->
           <div class="flex items-center gap-2 sm:gap-3">
-            <!-- Supabase / Local Sync Status Indicator (Clickable for Cloud Settings) -->
-            <button onclick="openSupabaseModal()" id="syncStatus" class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-800/90 hover:bg-emerald-800 text-emerald-100 border border-emerald-600/40 transition cursor-pointer shadow-xs" title="ক্লাউড ডাটা সিঙ্ক সেটিংস (Supabase)">
+            <!-- Supabase / Local Sync Status Indicator (Hidden as requested) -->
+            <button onclick="openSupabaseModal()" id="syncStatus" class="hidden items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-800/90 hover:bg-emerald-800 text-emerald-100 border border-emerald-600/40 transition cursor-pointer shadow-xs" title="ক্লাউড ডাটা সিঙ্ক সেটিংস (Supabase)">
               <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span id="syncStatusText" class="hidden sm:inline">Supabase Connected</span>
               <span class="sm:hidden text-[11px]"><i class="fa-solid fa-cloud"></i> সিঙ্ক</span>
@@ -205,13 +205,19 @@
                   <i class="fa-solid fa-upload text-blue-600 text-sm"></i> ব্যাকআপ রিস্টোর (JSON)
                   <input type="file" id="importJsonFileInput" accept=".json" class="hidden" onchange="importJSONBackup(event)" />
                 </label>
-                <div class="border-t border-slate-100 my-1"></div>
                 <button onclick="resetToFreshData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-rose-50 text-rose-700 font-bold flex items-center gap-2.5">
                   <i class="fa-solid fa-broom text-rose-600 text-sm"></i> ফ্রেশ শুরু (সকল ডাটা মুছুন)
                 </button>
                 <button onclick="resetToDemoData(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-amber-50 text-amber-700 flex items-center gap-2.5 text-[11px]">
                   <i class="fa-solid fa-rotate text-amber-600 text-sm"></i> নমুনা ডেমো ডাটা দেখুন
                 </button>
+                <div class="border-t border-slate-100 my-1"></div>
+                <button onclick="openDeveloperProfileModal(); toggleDataMenu()" class="w-full text-left px-3.5 py-2 hover:bg-indigo-50 text-indigo-700 font-bold flex items-center gap-2.5">
+                  <i class="fa-solid fa-code text-indigo-600 text-sm"></i> সফটওয়্যার ডেভেলপার (Zahid Hasan)
+                </button>
+                <a href="https://www.facebook.com/zahidhasan.34" target="_blank" rel="noopener noreferrer" onclick="toggleDataMenu()" class="w-full text-left px-3.5 py-1.5 hover:bg-blue-50 text-blue-700 font-bold flex items-center gap-2.5 text-xs">
+                  <i class="fa-brands fa-facebook text-[#1877F2] text-sm"></i> ডেভেলপার ফেসবুক (zahidhasan.34)
+                </a>
               </div>
             </div>
 
@@ -1442,31 +1448,68 @@
 
     <!-- FOOTER -->
     <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-xs text-slate-500">
-      <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
-          <div class="flex items-center gap-2">
-            <div class="w-6 h-6 rounded-full overflow-hidden border border-emerald-500">
-              <img src="/assets/aistudio/abir_0d80e39e.jpg" alt="মো: ইয়াসিন আবির" class="ownerProfileImage w-full h-full object-cover" onerror="this.src='/abir.jpg'" />
+      <div class="max-w-7xl mx-auto px-4 space-y-4">
+        <!-- Top Row: Owner & Local Storage -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+            <div class="flex items-center gap-2">
+              <div class="w-6 h-6 rounded-full overflow-hidden border border-emerald-500">
+                <img src="/assets/aistudio/abir_0d80e39e.jpg" alt="মো: ইয়াসিন আবির" class="ownerProfileImage w-full h-full object-cover" onerror="this.src='/abir.jpg'" />
+              </div>
+              <button onclick="openOwnerProfileModal()" class="font-bold text-slate-800 hover:text-emerald-700 transition cursor-pointer">
+                স্বত্বাধিকারী: মো: ইয়াসিন আবির
+              </button>
             </div>
-            <button onclick="openOwnerProfileModal()" class="font-bold text-slate-800 hover:text-emerald-700 transition cursor-pointer">
-              স্বত্বাধিকারী: মো: ইয়াসিন আবির
+            <span>•</span>
+            <a href="https://www.facebook.com/yeasin.abir.71/photos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-bold bg-blue-50 px-2 py-0.5 rounded-md hover:bg-blue-100 transition">
+              <i class="fa-brands fa-facebook text-blue-600"></i>
+              <span>ফেসবুক আইডি / ছবি</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+            </a>
+            <span>•</span>
+            <span class="text-slate-400">ইয়াসিন পোল্ট্রি ফার্ম</span>
+          </div>
+          <div class="flex items-center gap-3 text-slate-400 text-[11px]">
+            <span>লোকাল স্টোরেজে সংরক্ষিত</span>
+            <span>•</span>
+            <button onclick="exportJSONBackup()" class="hover:text-emerald-600 transition cursor-pointer">ব্যাকআপ ডাউনলোড</button>
+            <span>•</span>
+            <button onclick="resetToFreshData()" class="text-rose-600 hover:text-rose-800 font-semibold transition cursor-pointer">ফ্রেশ ডাটা</button>
+          </div>
+        </div>
+
+        <!-- Bottom Row: Website Creator Promotion Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-3 sm:p-4 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md border border-indigo-900/40">
+          <div class="flex items-center gap-3">
+            <div class="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-indigo-400 shadow-md flex-shrink-0 bg-slate-800">
+              <img src="/assets/aistudio/Tarek_Photo_8edc8099.jpg" alt="Zahid Hasan" class="w-full h-full object-cover" onerror="this.src='/zahid.jpg'" />
+            </div>
+            <div class="text-left">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-300 bg-indigo-900/70 px-2 py-0.5 rounded-full border border-indigo-700/50">
+                  <i class="fa-solid fa-code text-indigo-400 mr-1"></i> সিস্টেম ডেভেলপার
+                </span>
+                <span class="text-xs font-bold text-white">Zahid Hasan</span>
+                <a href="https://www.facebook.com/zahidhasan.34" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-300 hover:text-white bg-[#1877F2]/30 hover:bg-[#1877F2] px-2 py-0.5 rounded-full border border-[#1877F2]/50 transition">
+                  <i class="fa-brands fa-facebook text-[#1877F2] group-hover:text-white"></i> fb.com/zahidhasan.34
+                </a>
+              </div>
+              <p class="text-[11px] text-slate-300 mt-0.5 font-sans">
+                পোল্ট্রি, এগ্রো ও বাণিজ্যিক প্রতিষ্ঠানের কাস্টম সফটওয়্যার ও ওয়েবসাইট তৈরির বিশ্বস্ত কারিগর
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <a href="https://www.facebook.com/zahidhasan.34" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold text-xs shadow-md transition transform active:scale-95 cursor-pointer">
+              <i class="fa-brands fa-facebook"></i>
+              <span>ফেসবুক প্রোফাইল</span>
+            </a>
+            <button onclick="openDeveloperProfileModal()" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-bold text-xs shadow-md transition transform active:scale-95 cursor-pointer flex-shrink-0">
+              <i class="fa-solid fa-user-tie"></i>
+              <span>সার্ভিস ও বিবরণ</span>
+              <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </button>
           </div>
-          <span>•</span>
-          <a href="https://www.facebook.com/yeasin.abir.71/photos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-bold bg-blue-50 px-2 py-0.5 rounded-md hover:bg-blue-100 transition">
-            <i class="fa-brands fa-facebook text-blue-600"></i>
-            <span>ফেসবুক আইডি / ছবি</span>
-            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-          </a>
-          <span>•</span>
-          <span class="text-slate-400">ইয়াসিন পোল্ট্রি ফার্ম</span>
-        </div>
-        <div class="flex items-center gap-3 text-slate-400 text-[11px]">
-          <span>লোকাল স্টোরেজে সংরক্ষিত</span>
-          <span>•</span>
-          <button onclick="exportJSONBackup()" class="hover:text-emerald-600 transition cursor-pointer">ব্যাকআপ ডাউনলোড</button>
-          <span>•</span>
-          <button onclick="resetToFreshData()" class="text-rose-600 hover:text-rose-800 font-semibold transition cursor-pointer">ফ্রেশ ডাটা</button>
         </div>
       </div>
     </footer>
@@ -2224,6 +2267,107 @@
       </div>
     </div>
 
+    <!-- MODAL 10: DEVELOPER & CREATOR PROMOTION MODAL -->
+    <div id="developerProfileModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/75 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-7 text-slate-800 relative max-h-[92vh] overflow-y-auto border border-indigo-100">
+        <button onclick="closeModal('developerProfileModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+
+        <!-- Header Profile -->
+        <div class="text-center pt-2 pb-2">
+          <div class="relative inline-block mx-auto mb-3">
+            <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-indigo-600 shadow-xl ring-4 ring-indigo-300/40 mx-auto bg-slate-900">
+              <img src="/assets/aistudio/Tarek_Photo_8edc8099.jpg" alt="Zahid Hasan" class="w-full h-full object-cover" onerror="this.src='/zahid.jpg'" />
+            </div>
+            <div class="absolute bottom-1 right-2 bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md" title="ভেরিফাইড সফটওয়্যার ডেভেলপার">
+              <i class="fa-solid fa-laptop-code text-xs"></i>
+            </div>
+          </div>
+
+          <h3 class="text-2xl font-black text-slate-900 font-display">Zahid Hasan</h3>
+          <p class="text-xs sm:text-sm font-semibold text-indigo-700 mt-0.5">Software Engineer &amp; Full-Stack System Creator</p>
+          <div class="flex items-center justify-center gap-2 mt-2 flex-wrap">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-900 border border-indigo-200">
+              <i class="fa-solid fa-rocket text-indigo-600"></i> আধুনিক ওয়েব ও বিজনেস সফটওয়্যার সল্যুশন
+            </div>
+            <a href="https://www.facebook.com/zahidhasan.34" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-[#1877F2] hover:bg-blue-100 border border-blue-200 transition shadow-xs">
+              <i class="fa-brands fa-facebook text-sm"></i> fb.com/zahidhasan.34
+            </a>
+          </div>
+        </div>
+
+        <!-- Creator Bio & Skills -->
+        <div class="space-y-3.5 border-t border-slate-100 pt-4 text-xs text-slate-600">
+          <div class="bg-gradient-to-br from-indigo-50 to-blue-50/60 rounded-2xl p-4 border border-indigo-100">
+            <h4 class="font-bold text-indigo-950 mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-lightbulb text-indigo-600"></i> সিস্টেম আর্কিটেকচার ও ডিজাইন
+            </h4>
+            <p class="text-slate-700 leading-relaxed font-sans text-xs">
+              "ইয়াসিন পোল্ট্রি ম্যানেজমেন্ট সিস্টেমটি বিশেষভাবে ডিজাইন করা হয়েছে খামারিদের দৈনিক হিসাব সহজ, গতিশীল এবং রিয়েল-টাইম ক্লাউড ও অফলাইন সুরক্ষায় সংরক্ষণ করার জন্য।"
+            </p>
+          </div>
+
+          <!-- Services Grid -->
+          <div class="space-y-2">
+            <h5 class="text-[11px] font-bold text-slate-700 uppercase tracking-wider">ডেভেলপার সার্ভিস সমূহ:</h5>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs mb-1">
+                  <i class="fa-solid fa-egg text-emerald-600"></i> পোল্ট্রি ও এগ্রো ইআরপি
+                </div>
+                <p class="text-[11px] text-slate-500">ব্যাচ লাভ-ক্ষতি, এফসিআর ক্যালকুলেটর ও মেমো ভাউচার সফটওয়্যার</p>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs mb-1">
+                  <i class="fa-solid fa-globe text-blue-600"></i> কাস্টম ওয়েবসাইট
+                </div>
+                <p class="text-[11px] text-slate-500">বিজনেস পোর্টাল, ল্যান্ডিং পেজ ও আধুনিক ইউজার ইন্টারফেস</p>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs mb-1">
+                  <i class="fa-solid fa-cloud text-amber-600"></i> ক্লাউড ডাটাবেস
+                </div>
+                <p class="text-[11px] text-slate-500">Supabase, Firebase ও লোকাল অফলাইন সিঙ্কিং সিস্টেম</p>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs mb-1">
+                  <i class="fa-solid fa-mobile-screen text-purple-600"></i> মোবাইল অপটিমাইজেশন
+                </div>
+                <p class="text-[11px] text-slate-500">স্মার্টফোন ও ট্যাবলেটে দ্রুততম ও মসৃণ কার্যক্ষমতা</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact / Hire Call to Action -->
+          <div class="pt-2 bg-slate-900 rounded-2xl p-4 text-white text-center">
+            <h4 class="font-bold text-sm text-indigo-300">আপনার ব্যবসা বা খামারের জন্য সফটওয়্যার প্রয়োজন?</h4>
+            <p class="text-[11px] text-slate-300 mt-1 mb-3">
+              কাস্টম সফটওয়্যার, হিসাবের অ্যাপ বা আধুনিক ওয়েবসাইট তৈরি করতে যোগাযোগ করুন:
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+              <a href="https://www.facebook.com/zahidhasan.34" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold text-xs shadow-md transition active:scale-95 cursor-pointer">
+                <i class="fa-brands fa-facebook text-sm"></i> ফেসবুক প্রোফাইল
+              </a>
+              <a href="mailto:chanuaunionparisod@gmail.com" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-envelope"></i> ইমেইল পাঠান
+              </a>
+              <a href="tel:+8801700000000" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-phone"></i> সরাসরি যোগাযোগ
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+          <span class="text-[11px] text-slate-400 font-medium">Crafted with precision &amp; care by Zahid Hasan</span>
+          <button type="button" onclick="closeModal('developerProfileModal')" class="px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer">
+            বন্ধ করুন
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- ============================================================ -->
     <!-- JAVASCRIPT APPLICATION CODE -->
     <!-- ============================================================ -->
@@ -2604,7 +2748,7 @@
             showToast('ডাটা ব্রাউজারে সুরক্ষিত রয়েছে এবং সিঙ্ক সফল হয়েছে।', 'success');
           }
         } else {
-          showToast('Supabase Connected: লোকাল স্টোরেজে সমস্ত ডাটা সংরক্ষিত ও সিঙ্কড!', 'success');
+          showToast('লোকাল স্টোরেজে সমস্ত ডাটা সংরক্ষিত ও সুরক্ষিত রয়েছে!', 'success');
         }
       }
 
@@ -4032,6 +4176,10 @@
 
       function openOwnerProfileModal() {
         openModal('ownerProfileModal');
+      }
+
+      function openDeveloperProfileModal() {
+        openModal('developerProfileModal');
       }
 
       /**
